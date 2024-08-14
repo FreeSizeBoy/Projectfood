@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Itim", sans-serif;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333; /* เปลี่ยนเป็นสีเข้ม */
+}
+
+.img-logo img {
+    width: 60px;
+}
+
+.menu {
+    display: flex;
+    padding: 10px;
+    font-size: 24px; /* ลดขนาดตัวอักษร */
+    gap: 30px; /* ลดช่องว่าง */
+}
+
+.menu a {
+    text-decoration: none;
+    color: #f5f5f5; /* สีขาวอมเทา */
+}
+
+.menu a:hover {
+    background-color: #555; /* สีเทาเข้มเมื่อ hover */
+    border-radius: 50px;
+    color: #f5f5f5;
+}
+
+.menu-main {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.menu-main h2 {
+    border: 2px solid #777; /* สีเทาเข้ม */
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f8f8f8; /* สีเทาอ่อน */
+    color: #333; /* สีเทาเข้ม */
+    font-size: 20px; /* ลดขนาดตัวอักษร */
+    text-align: center;
+}
+
+/* Main Content Styles */
+.main {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f8f8; /* สีเทาอ่อน */
+}
+
+.main h2 {
+    margin-top: 2rem;
+    color: #333; /* สีเทาเข้ม */
+}
+
+.main button {
+    padding: 15px;
+    background-color: #8c6d40; /* สีทองอ่อน */
+    font-size: 20px; /* ลดขนาดตัวอักษร */
+    border-radius: 50px;
+    width: 180px; /* ลดขนาดปุ่ม */
+    border: 2px solid #7a5a35; /* ขอบสีทองเข้ม */
+    color: #fff; /* สีตัวอักษรปุ่ม */
+}
+
+.main button a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.main button:hover {
+    background-color: #7a5a35; /* สีทองเข้ม */
+    border: 2px solid #6c4e30; /* ขอบสีทองเข้ม */
+}
+
+.main img {
+    height: 300px; /* ลดขนาดภาพ */
+}
+
+.button-menu button {
+    margin-top: 2rem;
+    padding: 15px; /* ลดขนาดปุ่ม */
+    margin-bottom: 1rem;
+    border: 2px solid #ddd; /* ขอบสีเทาอ่อน */
+}
+
+.button-menu button:hover {
+    background-color: #ddd; /* สีเทาอ่อน */
+}
+
+/* Centered Container */
+.containers {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background: #f0e6e0; /* สีครีมอ่อน */
+}
+
+#carouselExampleAutoplaying {
+    display: flex;
+    width: 70%; /* ขยายขนาด */
+    margin-top: 2rem;
+    height: auto;
+    text-align: right;
+    align-items: center;
+}
+
+/* Menu Items Styles */
+.menu-items {
+    padding: 20px;
+    border: 1px solid #ddd; /* ขอบสีเทาอ่อน */
+    border-radius: 15px; /* เพิ่มความโค้งมน */
+    background-color: #fff; /* สีพื้นหลังของรายการ */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* เงาอ่อน */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.menu-itemss {
+    padding: 20px;
+    border: 1px solid #ddd; /* ขอบสีเทาอ่อน */
+    border-radius: 15px; /* เพิ่มความโค้งมน */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* เงาอ่อน */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 20px auto;
+}
+
+.menu-item {
+    padding: 20px;
+    border: 1px solid #ddd; /* ขอบสีเทาอ่อน */
+    border-radius: 15px; /* เพิ่มความโค้งมน */
+    text-align: center;
+    background-color: #f9f9f9; /* สีพื้นหลังอ่อน */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* เงาอ่อน */
+}
+
+.menu-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    height: 200px;
+    width: 300px;
+    padding: 5px;
+}
+
+.menu-item h4 {
+    color: #333; /* สีเทาเข้ม */
+    margin: 10px 0;
+}
+
+.menu-item button {
+    padding: 10px;
+    background-color: #8c6d40; /* สีทองอ่อน */
+    border: none;
+    color: #fff; /* สีตัวอักษรปุ่ม */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff; /* สีพื้นหลัง */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-content a {
+    color: #333; /* สีตัวอักษร */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0f0f0; /* สีพื้นหลังที่เปลี่ยนเมื่อ hover */
+}
+
+.dropdown.show .dropdown-content {
+    display: block;
+}
+
+/* Centered Layout Styles */
+.centar {
+    display: flex;
+    background-color: #f5f5f5; /* สีพื้นหลัง */
+    margin-top: 2rem;
+}
+
+.main-img-cen {
+    padding: 20px;
+}
+
+.main-img-cen img {
+    height: 300px; /* ลดขนาดภาพ */
+    padding: 20px;
+}
+
+.main-cen {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    color: #333; /* สีตัวอักษร */
+}
+
+.main-cen h2 {
+    font-size: 50px; /* ลดขนาดตัวอักษร */
+    color: #333; /* สีตัวอักษร */
+}
+
+.main-cen p {
+    font-size: 20px; /* ลดขนาดตัวอักษร */
+}
+
+.main-down {
+    margin-top: 2rem;
+}
+
+.main-down h2 {
+    color: #333; /* สีตัวอักษร */
+    text-align: center;
+}
+
+.main-downs {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.main-downs img {
+    height: 200px;
+    width: 300px;
+    padding: 5px;
+}
+
+/* Footer Styles */
+.main-footer-1 {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin-top: 2rem;
+    background-color: #f5f5f5; /* สีพื้นหลัง */
+}
+
+.main-footer {
+    color: #333; /* สีตัวอักษร */
+    font-size: 20px;
+    text-align: center;
+}
+
+.main-footers {
+    color: #666; /* สีตัวอักษรที่อ่อนกว่า */
+}
+
+.main-footer-2 {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #ddd; /* สีเทาอ่อน */
+}
+
+/* Font Awesome Icon Styles */
+.fa-brands {
+    font-size: 35px;
+    width: 60px;
+    width: -webkit-fill-available;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .menu {
+        flex-direction: column;
+        font-size: 20px;
+        gap: 20px;
+    }
+
+    .main button {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .main-img-cen img {
+        height: auto;
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .menu {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .menu-itemss {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-main h2 {
+        font-size: 18px;
+        padding: 5px;
+    }
+
+    .menu-item img {
+        height: auto;
+        width: 100%;
+    }
+}

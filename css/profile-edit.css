@@ -1,0 +1,104 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #4CAF50;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+label {
+    display: inline-block;
+    width: 150px; /* กำหนดความกว้างที่ต้องการ */
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="file"],
+textarea {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+img#profileImage {
+    display: block;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Circular profile picture */
+    object-fit: cover; /* Ensure image covers the element without distortion */
+    margin: 0 auto 10px;
+}
+
+@media (max-width: 430px) {
+    h1 {
+        font-size: 1.25rem; /* ขนาดตัวอักษรของ h1 */
+    }
+
+    .container {
+        padding: 0.5rem; /* ลดระยะห่างภายใน container */
+    }
+
+    .form-group {
+        margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="file"],
+    textarea {
+        font-size: 0.875rem; /* ขนาดฟอนต์ของ input */
+        width: 20px;
+    }
+
+    button {
+        font-size: 0.875rem; /* ขนาดฟอนต์ของปุ่ม */
+    }
+}
