@@ -27,7 +27,7 @@ if (isset($_SESSION['id'])) {
 </head>
 
 <body>
-    
+
 
     <!DOCTYPE html>
     <html lang="th">
@@ -40,10 +40,10 @@ if (isset($_SESSION['id'])) {
     </head>
 
     <body>
-    <?php
-    include "component\head.php";
+        <?php
+        include "component\head.php";
 
-    ?>
+        ?>
         <div class="login-form">
             <div class="details">
                 <div class="welcomes">
@@ -52,7 +52,7 @@ if (isset($_SESSION['id'])) {
                 <form data-form="register">
 
                     <div class="wrap">
-                        
+
                         <label for="frist_name">ชื่อ</label>
                         <input id="frist_name" name="frist_name" type="text" class="input" required>
                     </div>
@@ -69,14 +69,14 @@ if (isset($_SESSION['id'])) {
                     <div class="wrap">
                         <label for="password">รหัสผ่าน</label>
                         <input id="password" name="password" type="password" class="input" data-type="password" required>
-                        <span class="toggle-password" onclick="togglePassword('password')">👁‍🗨</span>
+                        <span class="toggle-password" onclick="togglePassword('password')">👀</span>
                     </div>
 
                     <div class="wrap">
-                    <label for="confirm_password">ยืนยันรหัสผ่าน</label>
-                    <input id="confirm_password" name="confirm_password" type="password" class="input" data-type="password" required>
-                    <span class="toggle-password" onclick="togglePassword('confirm_password')">👁‍🗨</span>
-                </div>
+                        <label for="confirm_password">ยืนยันรหัสผ่าน</label>
+                        <input id="confirm_password" name="confirm_password" type="password" class="input" data-type="password" required>
+                        <span class="toggle-password" onclick="togglePassword('confirm_password')">👀</span>
+                    </div>
 
                     <div class="wrap">
                         <label for="classroom">ห้องเรียน</label>
@@ -84,20 +84,20 @@ if (isset($_SESSION['id'])) {
                     </div>
 
                     <div class="wrap">
-                <label for="gender">เพศ</label>
-                <select id="gender" name="gender" class="input" required>
-                    <option value="เลือก" disabled selected>เลือกเพศ</option>
-                    <option value="ชาย">ชาย</option>
-                    <option value="หญิง">หญิง</option>
-                    <option value="อื่นๆ">อื่น ๆ</option>
-                </select>
-            </div>
+                        <label for="gender">เพศ</label>
+                        <select id="gender" name="gender" class="input" required>
+                            <option value="เลือก" disabled selected>เลือกเพศ</option>
+                            <option value="ชาย">ชาย</option>
+                            <option value="หญิง">หญิง</option>
+                            <option value="อื่นๆ">อื่น ๆ</option>
+                        </select>
+                    </div>
 
                     <!-- <div class="wrap">
                         <label for="gender">เพศ</label>
                         <input id="gender" name="gender" class="input" required>
                     </div> -->
-                    
+
 
 
                     <button type="submit" class="button">
@@ -128,10 +128,9 @@ if (isset($_SESSION['id'])) {
         }
     </script>
 
-
-
-
     <script>
+
+        
         $('[data-form="register"]').on('submit', (e) => {
             e.preventDefault();
             $('button[type="submit"]').prop('disabled', true);

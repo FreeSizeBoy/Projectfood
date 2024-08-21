@@ -1,6 +1,7 @@
 <?php
 $id = $_SESSION['id'] ?? null;
 $img_url = $_SESSION['img_url'] ?? null;
+$username = $_SESSION['username'] ?? null;
 ?>
 
 <div class="header">
@@ -20,8 +21,10 @@ $img_url = $_SESSION['img_url'] ?? null;
         <div class="menu">
 
         <?php if ($id) : ?>
+            <h5 class="username"><?= $username ?></h5>
             <div class="dropdown">
                 <img src="<?= $img_url ?>" alt="Profile" id="profile-img" class="img-thumbnail" style="width: 55px; height: 55px; cursor: pointer;">
+                <a class="cart" href="<?= ROOT_URL ?>/cart">🛒</a>
                 <div class="dropdown-menu" aria-labelledby="profile-img">
                     <a class="dropdown-item" href="<?= ROOT_URL ?>/profile">แก้ไขโปรไฟล์</a>
                     <a class="dropdown-item" href="<?= ROOT_URL ?>/order_history">ประวัติการสั่งซื้อ</a>
@@ -31,6 +34,7 @@ $img_url = $_SESSION['img_url'] ?? null;
         <?php else : ?>
             <div><a href="register">สมัคร</a></div>
             <div><a href="login">เข้าสู่ระบบ</a></div>
+
         <?php endif; ?>
 
         
@@ -41,21 +45,6 @@ $img_url = $_SESSION['img_url'] ?? null;
 
     <script>
    document.addEventListener('DOMContentLoaded', function () {
-    // var hamburger = document.getElementById('hamburger');
-    // var navMenu = document.getElementById('nav-menu');
-
-    // hamburger.addEventListener('click', function () {
-    //     navMenu.classList.toggle('show');
-    // });
-
-    // // Close the menu when clicking outside
-    // window.addEventListener('click', function (event) {
-    //     if (!hamburger.contains(event.target) && !navMenu.contains(event.target)) {
-    //         navMenu.classList.remove('show');
-    //     }
-    // });
-
-    // Dropdown menu for profile
     var profileImg = document.getElementById('profile-img');
     if (profileImg) {
         var dropdownMenu = new bootstrap.Dropdown(profileImg);

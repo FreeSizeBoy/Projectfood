@@ -1,104 +1,242 @@
+/* ส่วนของการนำเข้าฟอนต์ */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Charmonman:wght@400;700&display=swap');
+
+/* ตั้งค่าพื้นฐานสำหรับ body */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: 'Chakra Petch', sans-serif;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
     margin: 0;
     padding: 0;
 }
 
+/* ตกแต่ง container */
 .container {
+    width: 90%;
     max-width: 800px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ddd;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
+/* เพิ่มความสวยงามให้กับหัวข้อ */
 h1 {
     text-align: center;
-    color: #4CAF50;
+    color: #333;
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
+/* ตกแต่งรูปโปรไฟล์ */
+#profileImage {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #4CAF50;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+}
+
+#profileImage:hover {
+    transform: scale(1.1);
+}
+
+/* การจัดสไตล์ฟอร์ม */
 .form-group {
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
+    margin-bottom: 20px;
 }
 
-label {
-    display: inline-block;
-    width: 150px; /* กำหนดความกว้างที่ต้องการ */
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="date"],
-input[type="file"],
-textarea {
-    flex: 1;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-textarea {
-    resize: vertical;
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="tel"]:focus,
+.form-group input[type="date"]:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+    outline: none;
 }
 
+.form-group input[type="file"] {
+    margin-top: 10px;
+}
+
+/* ตกแต่งปุ่ม */
 button {
     display: block;
     width: 100%;
-    padding: 0.5rem;
-    background-color: #4CAF50;
-    color: white;
+    padding: 15px;
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    color: #fff;
+    font-size: 18px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-weight: 700;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background-color: #45a049;
+    background: linear-gradient(135deg, #45a049, #388e3c);
+    transform: translateY(-2px);
 }
 
-img#profileImage {
+button:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ตกแต่งการอัปโหลดไฟล์ */
+.file-upload-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.file-upload-label {
     display: block;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%; /* Circular profile picture */
-    object-fit: cover; /* Ensure image covers the element without distortion */
-    margin: 0 auto 10px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-@media (max-width: 430px) {
-    h1 {
-        font-size: 1.25rem; /* ขนาดตัวอักษรของ h1 */
-    }
+.file-upload-label:hover {
+    background: linear-gradient(135deg, #45a049, #388e3c);
+    transform: translateY(-2px);
+}
 
+.file-upload-label::before {
+    content: 'เลือกไฟล์';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: #fff;
+    z-index: 1;
+}
+
+.file-upload-input {
+    display: none;
+}
+
+.file-upload-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.file-upload-preview img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.file-upload-preview img:hover {
+    transform: scale(1.1);
+}
+
+/* การออกแบบที่ตอบสนองต่อขนาดหน้าจอ */
+@media (max-width: 768px) {
     .container {
-        padding: 0.5rem; /* ลดระยะห่างภายใน container */
+        width: 95%;
+        padding: 20px;
     }
 
-    .form-group {
-        margin-bottom: 0.5rem;
+    h1 {
+        font-size: 28px;
     }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    input[type="date"],
-    input[type="file"],
-    textarea {
-        font-size: 0.875rem; /* ขนาดฟอนต์ของ input */
-        width: 20px;
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 14px;
+        padding: 10px;
     }
 
     button {
-        font-size: 0.875rem; /* ขนาดฟอนต์ของปุ่ม */
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    #profileImage {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    #profileImage {
+        width: 100px;
+        height: 100px;
     }
 }

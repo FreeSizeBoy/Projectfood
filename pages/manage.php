@@ -22,6 +22,7 @@
             <li><a href="order">คำสั่งซื้อ</a></li>
             <li><a href="report">รายงานยอดขาย</a></li>
             <li><a href="setting">จัดการร้านอาหาร</a></li>
+            <li><a href="dashboard_m">เปลี่ยนไปยังหน้าโทรศัพท์</a></li>
             <li><a href="<?= ROOT_URL ?>/api/logout">ออกจากระบบ</a></li>
         </ul>
     </div>

@@ -5,52 +5,57 @@ require_once 'sevice/upload.php';
 
 $id = $parameters[0];
 
-// if ($_SESSION['role'] !== 'super_admin') {
-//     echo json_encode([
-//         'status' => false,
-//         'massage' => 'ไม่สามารถลบร้านได้'
-//     ]);
-//     return;
-// }
+// ตรวจสอบการอนุญาต (ถ้าต้องการ)
+if ($_SESSION['role'] !== 'super_admin') {
+    echo json_encode([
+        'status' => false,
+        'message' => 'ไม่สามารถเปลี่ยนสถานะคำสั่งซื้อได้'
+    ]);
+    return;
+}
 
+// ดึงข้อมูลคำสั่งซื้อจากฐานข้อมูล
 $orders = getOrdersById($conn, $id);
 
 if ($orders === null) {
     echo json_encode([
         'status' => false,
-        'massage' => 'ไม่พบข้อมูลอาหาร'
+        'message' => 'ไม่พบข้อมูลคำสั่งซื้อ'
     ]);
     return;
 }
 
-$user_id = $_POST['owner_id'] ?? $orders['user_id'];
-$menu_id = $_POST['menuname'] ?? $orders['menu_id'];
-$price = $_POST['price'] ?? $orders['price]'];
-$status = $_POST['stock'] ?? $orders['status'];
-$slip = $_POST['type'] ?? $orders['slip'];
-$users_name = $_FILES['uploadImage']["users_name"] ?? null;
+// รับค่าที่ส่งมาจากฟอร์ม
+$status = $_POST['status'] ?? $orders['status'];
 
-if ($imageUrl) {
-    $imageUrl = uploadFile($_FILES['uploadImage'], SLIP_UPLOAD_DIR);
-    if (!$imageUrl['status']) {
-        echo json_encode($imageUrl);        return;
-    }
-    $imageUrl = $imageUrl['filename']; 
-} else {
-    $imageUrl = $orders['img_url'] ?? null;
-}
+// อัปเดตคำสั่งซื้อในฐานข้อมูล
+$result = updateOrderStatus($conn, $id, $status);
 
-$orders = updateOrders($conn, $id, $user_id, $menu_id, $price, $status, $slip, $users_name);
-
-if ($orders === null) {
+if ($result === false) {
     echo json_encode([
         'status' => false,
-        'massage' => 'เกิดข้อผิดพลาด'
+        'message' => 'เกิดข้อผิดพลาดในการอัปเดตสถานะ'
     ]);
     return;
 }
 
 echo json_encode([
     'status' => true,
-    'massage' => 'แก้ไขอาหารสำเร็จ',
+    'message' => 'เปลี่ยนสถานะคำสั่งซื้อสำเร็จ'
 ]);
+
+// ฟังก์ชันอัปเดตสถานะคำสั่งซื้อ
+function updateOrderStatus($conn, $id, $status) {
+    $sql = "UPDATE orders SET status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        return false;
+    }
+
+    $stmt->bind_param('si', $status, $id);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    return $success;
+}
+?>

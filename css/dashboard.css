@@ -1,17 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Charmonman:wght@400;700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Pridi:wght@200;300;400;500;600;700&display=swap');
 
+/* General Styles */
 body {
-    font-family: 'Itim', sans-serif;
+    font-family: 'Pridi', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #e0f7fa;
     color: #333;
+    line-height: 1.6;
 }
 
+/* Container Styles */
 .container {
     display: flex;
+    flex-direction: column; /* Stack elements vertically for small screens */
+    min-height: 100vh;
 }
 
+/* Sidebar Styles */
 .sidebar {
     width: 260px;
     height: 100vh;
@@ -21,7 +27,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    overflow: auto;
+    overflow-y: auto;
+    transition: width 0.3s;
 }
 
 .sidebar h2 {
@@ -70,14 +77,15 @@ body {
     background-color: #0097a7;
 }
 
-
-
+/* Main Content Styles */
 .main-content {
-    margin-left: 300px;
+    margin-left: 260px;
     padding: 20px;
     flex: 1;
+    transition: margin-left 0.3s;
 }
 
+/* Header Styles */
 header {
     background-color: #ff4081;
     color: #fff;
@@ -87,6 +95,7 @@ header {
     text-align: center;
 }
 
+/* Dashboard Styles */
 .dashboard {
     margin: 20px;
     padding: 20px;
@@ -102,6 +111,7 @@ header {
     padding-bottom: 10px;
 }
 
+/* Table Styles */
 .table-container {
     overflow-x: auto;
 }
@@ -113,6 +123,7 @@ header {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .dashboard-table th, .dashboard-table td {
@@ -120,6 +131,7 @@ header {
     padding: 12px;
     text-align: left;
     word-break: break-word;
+    box-sizing: border-box;
 }
 
 .dashboard-table th {
@@ -140,7 +152,7 @@ header {
     vertical-align: top;
 }
 
-/* Modal Background */
+/* Modal Styles */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -249,22 +261,860 @@ button[type="submit"]:hover {
     background-color: #ef5350; /* Darker red on hover */
 }
 
-.restaurant-img{
+/* Image Styles */
+.restaurant-img {
     width: 100px;
     height: 100px;
     object-fit: cover;
 }
 
-.Add{
+/* Add Button Styles */
+.Add {
     color: #000000;
     padding: 10px 20px;
     margin: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
     font-family: "Itim";
+    transition: background-color 0.3s;
 }
 
-.Add:hover{
+.Add:hover {
     background-color: #e33371;
 }
 
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination .page-info {
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar h2 {
+        font-size: 20px;
+    }
+
+    .sidebar a {
+        font-size: 16px;
+    }
+
+    .dashboard h2 {
+        font-size: 20px;
+    }
+
+    .dashboard-table th, .dashboard-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .dashboard-table td {
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-table th, .dashboard-table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .Add {
+        padding: 8px 16px;
+    }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Charmonman:wght@400;700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Pridi:wght@200;300;400;500;600;700&display=swap');
+
+/* General Styles */
+body {
+    font-family: 'Pridi', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e0f7fa;
+    color: #333;
+    line-height: 1.6;
+    box-sizing: border-box;
+}
+
+/* Container Styles */
+.container {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically for small screens */
+    min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #00bcd4;
+    padding: 20px;
+    box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    transition: width 0.3s;
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+    color: #fff;
+    font-size: 24px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-bottom: 10px;
+}
+
+.sidebar a:hover {
+    background-color: #0097a7;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #0097a7;
+}
+
+/* Main Content Styles */
+.main-content {
+    margin-left: 260px;
+    padding: 20px;
+    flex: 1;
+    transition: margin-left 0.3s;
+    box-sizing: border-box;
+}
+
+/* Header Styles */
+header {
+    background-color: #ff4081;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Dashboard Styles */
+.dashboard {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.dashboard h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.dashboard-table th, .dashboard-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    word-break: break-word;
+    box-sizing: border-box;
+}
+
+.dashboard-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.dashboard-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.dashboard-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.dashboard-table td {
+    vertical-align: top;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    background-color: #ff4081; /* Pink background */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #e33371; /* Darker pink on hover */
+}
+
+/* Button Styles */
+.edit-button,
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.edit-button {
+    color: #4caf50; /* Green for edit */
+}
+
+.edit-button:hover {
+    background-color: #d4e157; /* Light green on hover */
+}
+
+.delete-button {
+    color: #f44336; /* Red for delete */
+}
+
+.delete-button:hover {
+    background-color: #ef5350; /* Darker red on hover */
+}
+
+/* Image Styles */
+.restaurant-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+/* Add Button Styles */
+.Add {
+    color: #000000;
+    padding: 10px 20px;
+    margin: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-family: "Itim";
+    transition: background-color 0.3s;
+}
+
+.Add:hover {
+    background-color: #e33371;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination .page-info {
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        padding: 10px;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .dashboard {
+        margin: 10px;
+        padding: 10px;
+    }
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: #00bcd4;
+    padding: 20px;
+    box-shadow: 4px 0 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    transition: width 0.3s;
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+    color: #fff;
+    font-size: 24px;
+    margin-top: 0;
+    text-align: center;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 10px;
+}
+
+.sidebar a:hover {
+    background-color: #0097a7;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content Styles */
+.main-content {
+    margin-left: 260px;
+    padding: 20px;
+    flex: 1;
+    transition: margin-left 0.3s;
+}
+
+/* Header Styles */
+header {
+    background-color: #ff4081;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Dashboard Styles */
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 280px;
+}
+
+.card h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #f4f4f4;
+    padding-bottom: 10px;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+.chart-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.chart-controls button {
+    background-color: #ff4081;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chart-controls button:hover {
+    background-color: #e33371;
+}
+
+/* Table Styles */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.report-table th, .report-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.report-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.report-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.report-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.report-table td {
+    vertical-align: top;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+/* Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    background-color: #ff4081; /* Pink background */
+    color: #fff; /* White text color */
+    border: none;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #e33371; /* Darker pink on hover */
+}
+
+/* Button Styles */
+.edit-button,
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.edit-button {
+    color: #4caf50; /* Green for edit */
+}
+
+.edit-button:hover {
+    background-color: #d4e157; /* Light green on hover */
+}
+
+.delete-button {
+    color: #f44336; /* Red for delete */
+}
+
+.delete-button:hover {
+    background-color: #ef5350; /* Darker red on hover */
+}
+
+/* Image Styles */
+.restaurant-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+/* Add Button Styles */
+.Add {
+    color: #000;
+    padding: 10px 20px;
+    margin: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-family: "Itim";
+    transition: background-color 0.3s;
+}
+
+.Add:hover {
+    background-color: #e33371;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination .page-info {
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.history-table th, .history-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    word-break: break-word;
+    box-sizing: border-box;
+}
+
+.history-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.history-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.history-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.history-table td {
+    vertical-align: top;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}

@@ -26,6 +26,7 @@ function getUserById($conn, $id)
 $owner_id = $_POST['owner_id'];
 $shopname = $_POST['shopname'];
 
+
 $user = getUserById($conn, $owner_id);
 
 if ($user === null) {
@@ -44,7 +45,16 @@ if (!$imageUrl['status']) {
 
 $imageUrl = $imageUrl['filename'];
 
-$shop = createShop($conn, $owner_id, $shopname, $imageUrl);
+$qrcode = uploadFile($_FILES['qrcode'], PAYMENT_UPLOAD_DIR);
+if (!$qrcode['status']) {
+    echo json_encode($qrcode);
+    return;
+}
+
+$qrcode = $qrcode['filename'];
+
+
+$shop = createShop($conn, $owner_id, $shopname, $imageUrl, $qrcode);
 
 if ($shop === null) {
     echo json_encode([

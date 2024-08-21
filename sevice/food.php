@@ -11,21 +11,49 @@ function getMenusById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getMenus($conn, $page = 1, $limit = 10, $search = '')
+function getMenus($conn, $page = 1, $limit = 10, $search = '', $shopId = null)
 {
     $offset = ($page - 1) * $limit;
 
-    // $sql = "SELECT * FROM menus  LIMIT $limit OFFSET $offset";
-    $sql = "SELECT * FROM menus WHERE menuname LIKE '%$search%' OR type LIKE '%$search%'  LIMIT $limit OFFSET $offset";
-    $result = $conn->query($sql);
+    // เริ่มต้นสร้างคิวรี SQL
+    $sql = "SELECT * FROM menus WHERE (menuname LIKE ? OR type LIKE ?)";
 
+    // หาก $shopId ถูกระบุ ให้เพิ่มเงื่อนไขในการค้นหา
+    if ($shopId !== null) {
+        // ตรวจสอบว่า $shopId เป็นค่าที่ถูกต้องหรือไม่
+        if (!is_numeric($shopId)) {
+            throw new InvalidArgumentException('Invalid shop ID');
+        }
+        $sql .= " AND shop_id = ?";
+    }
+
+    $sql .= " LIMIT ? OFFSET ?";
+
+    // เตรียมคำสั่ง SQL
+    $stmt = $conn->prepare($sql);
+
+    // สร้างพารามิเตอร์สำหรับ bind_param
+    $searchParam = "%$search%";
+    if ($shopId !== null) {
+        // หาก $shopId ถูกระบุ
+        $stmt->bind_param('ssiii', $searchParam, $searchParam, $shopId, $limit, $offset);
+    } else {
+        // หาก $shopId ไม่ถูกระบุ
+        $stmt->bind_param('ssii', $searchParam, $searchParam, $limit, $offset  );
+    }
+
+    $stmt->execute();
+
+    $result = $stmt->get_result();
     $menus = [];
+    
     while ($row = $result->fetch_assoc()) {
         $menus[] = $row;
     }
 
     return $menus;
 }
+
 
 function deleteMenus($conn, $id, $imageUrl)
 {

@@ -20,6 +20,7 @@ get('/login', 'pages/login.php');
 get('/menu1', 'pages/menu1.php');
 get('/menu2', 'pages/menu2.php');
 get('/dashboard', 'pages/dashboard.php');
+get('/dashboard_m', 'pages/dashboard_m.php');
 get('/order', 'pages/order.php');
 get('/food', 'pages/food.php');
 get('/report', 'pages/report.php');
@@ -27,6 +28,8 @@ get('/profile', 'pages/profile.php');
 get('/manage', 'pages/manage.php');
 get('/setting', 'pages/setting.php');
 get('/order_history', 'pages/order_history.php');
+get('/cart', 'pages/cart.php');
+get('/payment', 'pages/payment.php');
 
 // get('/app/css/nav-bar', 'css/nav-bar.css');
 // get('/app/css/side-bar', 'css/side-bar.css');

@@ -20,6 +20,7 @@
             <li><a href="order">คำสั่งซื้อ</a></li>
             <li><a href="report">รายงานยอดขาย</a></li>
             <li><a href="setting">จัดการร้านอาหาร</a></li>
+            <li><a href="dashboard_m">เปลี่ยนไปยังหน้าโทรศัพท์</a></li>
             <li><a href="<?= ROOT_URL ?>/api/logout">ออกจากระบบ</a></li>
         </ul>
     </div>
@@ -28,21 +29,23 @@
             <h1>ยินดีต้อนรับสู่ Dashboard ของร้านอาหาร</h1>
         </header>
         <section class="dashboard">
-            <h2>คำสั่งซื้อ <button class="Add" data-action="Add" onclick="openAddModal()">เพิ่ม</button></h2>
+            <h2>คำสั่งซื้อ</h2>
             <table id="orderTable" class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>ชื่อผู้สั่งซื้อ</th>
-                        <th>ชื่อเล่น</th>
-                        <th>อีเมล</th>
-                        <th>สถานะ</th>
-                        <th>ราคา</th>
-                        <th>วิธีชำระ</th>
-                        <th>แก้ไข</th>
-                        <th>ลบ</th>
-                    </tr>
-                </thead>
+            <thead>
+    <tr>
+        <th>ID</th>
+        <th>ชื่อผู้สั่งซื้อ</th>
+        <th>ชื่อเล่น</th>
+        <th>อีเมล</th>
+        <th>สถานะ</th>
+        <th>ราคา</th>
+        <th>วิธีชำระ</th>
+        <th>รายการอาหาร</th> <!-- คอลัมน์ใหม่สำหรับรายการอาหาร -->
+        
+        <th>ลบ</th>
+    </tr>
+</thead>
+
                 <tbody>
                     <!-- Table rows will be populated by JavaScript -->
                 </tbody>
@@ -97,8 +100,10 @@
                     
                     <label for="addOrderStatus">สถานะ:</label>
                     <select id="addOrderStatus" name="status" required>
-                        <option value="Completed">กำลังเตรียมอาหาร</option>
-                        <option value="Cancel">อาหารเสร็จแล้ว</option>
+                        <option value="waiting for payment">รอชำระเงิน</option>
+                        <option value="payment made">ชำระเงินแล้ว</option>
+                        <option value="preparing food">กำลังเตรียมอาหาร</option>
+                        <option value="foodfinished">อาหารเสร็จแล้ว</option>
                     </select>
                     
                     <label for="addSlip">สลิปการชำระเงิน:</label>
@@ -125,55 +130,106 @@
         }
 
         $(document).ready(() => {
-            // Load order data
-            $.ajax({
-                url: '<?= ROOT_URL ?>/api/orders',
-                type: 'GET',
-                success: function(response) {
-                    console.log(response);
-                    response = JSON.parse(response);
-                    if (response.status) {
-                        const orders = response.data;
-                        const table = $('#orderTable');
-                        const tbody = table.find('tbody');
-                        orders.forEach(order => {
-                            tbody.append(`
-                                <tr>
-                                    <td>${order.id}</td>
-                                    <td>${order.username}</td>
-                                    <td>${order.nickname}</td>
-                                    <td>${order.email}</td>
-                                    <td>${order.status}</td>
-                                    <td>${order.price}</td>
-                                    <td>${order.slip}</td>
-                                    <td><button data-id="${order.id}" data-action="Edit" class="edit-button">🖉</button></td>
-                                    <td><button data-id="${order.id}" data-action="Delete" class="delete-button">🗑️</button></td>
-                                </tr>
-                            `);
-                        });
+    // Load order data
+    $.ajax({
+        url: '<?= ROOT_URL ?>/api/orders',
+        type: 'GET',
+        success: function(response) {
+            console.log(response);
+            response = JSON.parse(response);
+            if (response.status) {
+                const orders = response.data;
 
-                        // Event listeners for edit and delete buttons
-                        table.on('click', 'button', (e) => {
-                            const button = $(e.target);
-                            const id = button.data('id');
-                            const action = button.data('action');
-                            if (action === 'Edit') {
-                                $('#editOrderModal').show();
-                                $('#editOrderId').val(id);
+                // Sort orders by ID in descending order (latest first)
+                orders.sort((a, b) => b.id - a.id);
+
+                const table = $('#orderTable');
+                const tbody = table.find('tbody');
+                tbody.empty(); // Clear existing rows
+
+                orders.forEach(order => {
+                    // Construct the menu details HTML
+                    let menuDetails = '';
+                    if (order.details && order.details.length > 0) {
+                        menuDetails = order.details.map(detail => `
+                            <div>
+                                <img src="<?= FOOD_UPLOAD_DIR ?>${detail.menu_image}" alt="${detail.menu_name}" style="width: 50px; height: auto;">
+                                <p>${detail.menu_name} - ${detail.amount} x ${detail.price}</p>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    tbody.append(`
+                        <tr>
+                            <td>${order.id}</td>
+                            <td>${order.username}</td>
+                            <td>${order.nickname}</td>
+                            <td>${order.email}</td>
+                            <td>${order.status}</td>
+                            <td>${order.total_price}</td>
+                            <td><img src="<?= SLIP_UPLOAD_DIR ?>${order.slip}" alt="${order.slip}" style="width: 50px; height: auto;"></td>
+                            <td>${menuDetails}</td> <!-- แสดงรายการอาหาร -->
+                            <td><button data-id="${order.id}" data-action="Delete" class="delete-button">🗑️</button></td>
+                        </tr>
+                    `);
+                });
+
+                // Event listeners for edit and delete buttons
+                table.on('click', 'button', (e) => {
+                    const button = $(e.target);
+                    const id = button.data('id');
+                    const action = button.data('action');
+                    if (action === 'Edit') {
+                        $('#editOrderModal').show();
+                        $('#editOrderId').val(id);
+                        $.ajax({
+                            url: `<?= ROOT_URL ?>/api/orders/${id}`,
+                            type: 'GET',
+                            success: function(response) {
+                                console.log(response);
+                                response = JSON.parse(response);
+                                if (response.status) {
+                                    const order = response.data;
+                                    $('#editOrderId').val(order.id);
+                                    $('#editUserId').val(order.userId);
+                                    $('#editMenuId').val(order.menuId);
+                                    $('#editPrice').val(order.price);
+                                    $('#editOrderStatus').val(order.orderStatus);
+                                    $('#editSlipPreview').attr('src', order.slip ? `<?= SLIP_UPLOAD_DIR ?>/${order.slip}` : 'https://via.placeholder.com/150?text=Slip+Image');
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: response.massage
+                                    });
+                                }
+                            }
+                        });
+                    } else if (action === 'Delete') {
+                        Swal.fire({
+                            title: 'คุณแน่ใจหรือไม่?',
+                            text: 'การลบข้อมูลจะไม่สามารถกู้คืนได้!',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#ff4081',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'ลบ',
+                            cancelButtonText: 'ยกเลิก'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
                                 $.ajax({
-                                    url: `<?= ROOT_URL ?>/api/orders/${id}`,
-                                    type: 'GET',
+                                    url: `<?= ROOT_URL ?>/api/orders/${id}/delete`,
+                                    type: 'POST',
                                     success: function(response) {
-                                        console.log(response);
                                         response = JSON.parse(response);
                                         if (response.status) {
-                                            const order = response.data;
-                                            $('#editOrderId').val(order.id);
-                                            $('#editUserId').val(order.userId);
-                                            $('#editMenuId').val(order.menuId);
-                                            $('#editPrice').val(order.price);
-                                            $('#editOrderStatus').val(order.orderStatus);
-                                            $('#editSlipPreview').attr('src', order.slip ? `<?= SLIP_UPLOAD_DIR ?>/${order.slip}` : 'https://via.placeholder.com/150?text=Slip+Image');
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: response.massage,
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            }).then(() => {
+                                                location.reload();
+                                            });
                                         } else {
                                             Swal.fire({
                                                 icon: 'error',
@@ -182,130 +238,98 @@
                                         }
                                     }
                                 });
-                            } else if (action === 'Delete') {
-                                Swal.fire({
-                                    title: 'คุณแน่ใจหรือไม่?',
-                                    text: 'การลบข้อมูลจะไม่สามารถกู้คืนได้!',
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#ff4081',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'ลบ',
-                                    cancelButtonText: 'ยกเลิก'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        $.ajax({
-                                            url: `<?= ROOT_URL ?>/api/orders/${id}/delete`,
-                                            type: 'POST',
-                                            success: function(response) {
-                                                response = JSON.parse(response);
-                                                if (response.status) {
-                                                    Swal.fire({
-                                                        icon: 'success',
-                                                        title: response.massage,
-                                                        showConfirmButton: false,
-                                                        timer: 1500
-                                                    }).then(() => {
-                                                        location.reload();
-                                                    });
-                                                } else {
-                                                    Swal.fire({
-                                                        icon: 'error',
-                                                        title: response.massage
-                                                    });
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
                             }
                         });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: response.massage
-                        });
                     }
-                },
-                error: function(error) {
-                    console.log(error);
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: response.massage
+                });
+            }
+        },
+        error: function(error) {
+            console.log(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด'
+            });
+        }
+    });
+
+    // Handle form submission for editing
+    $('#editOrderForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: `<?= ROOT_URL ?>/api/orders/${$('#editOrderId').val()}/edit`,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: new FormData(this),
+            success: function(response) {
+                response = JSON.parse(response);
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.massage,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'เกิดข้อผิดพลาด'
+                        title: response.massage
                     });
                 }
-            });
-
-            // Handle form submission for editing
-            $('#editOrderForm').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: `<?= ROOT_URL ?>/api/orders/${$('#editOrderId').val()}/edit`,
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: new FormData(this),
-                    success: function(response) {
-                        response = JSON.parse(response);
-                        if (response.status) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.massage,
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: response.massage
-                            });
-                        }
-                    }
-                });
-            });
-
-            // Handle form submission for adding
-            $('#addOrderForm').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: `<?= ROOT_URL ?>/api/orders/create/`,
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                    data: new FormData(this),
-                    success: function(response) {
-                        console.log(response);
-                        response = JSON.parse(response);
-                        if (response.status) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: response.massage,
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: response.massage
-                            });
-                        }
-                    }
-                });
-            });
-
-            // Close modals
-            $('.modal .close').on('click', function() {
-                $(this).closest('.modal').hide();
-            });
-
-            window.openAddModal = function() {
-                $('#addOrderModal').show();
             }
         });
+    });
+
+    // Handle form submission for adding
+    $('#addOrderForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: `<?= ROOT_URL ?>/api/orders/create/`,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: new FormData(this),
+            success: function(response) {
+                console.log(response);
+                response = JSON.parse(response);
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.massage,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: response.massage
+                    });
+                }
+            }
+        });
+    });
+
+    // Close modals
+    $('.modal .close').on('click', function() {
+        $(this).closest('.modal').hide();
+    });
+
+    window.openAddModal = function() {
+        $('#addOrderModal').show();
+    }
+});
+
+
     </script>
 </body>
 </html>

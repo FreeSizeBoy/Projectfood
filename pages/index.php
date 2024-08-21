@@ -20,7 +20,7 @@ $img_url = $_SESSION['img_url'] ?? null;
 </head>
 
 <body>
-
+<!-- header -->
     <?php
     include "component\head.php";
 
@@ -59,7 +59,7 @@ $img_url = $_SESSION['img_url'] ?? null;
             </div>
         </div>
     </div>
-
+<!-- containner -->
     <div class="centar">
         <div class="main-img-cen">
             <img src="img/rain.jpg" alt="">
@@ -71,7 +71,7 @@ $img_url = $_SESSION['img_url'] ?? null;
             <p>โรงเรียนเชียงกลาง“ประชาพัฒนา”ตั้งอยู่เลขที่ ๘๗ หมู่ ๑๑ ถนนอดุลย์เดชจรัส ตำบลเชียงกลาง อำเภอเชียงกลางจังหวัดน่านเดิมชื่อโรงเรียนประชาพัฒนาเริ่มก่อตั้งเมื่อปีการศึกษา ๒๕๐๓ มีเนื้อที่ ๗๙ ไร่เปิดทำการสอนครั้งแรกในระดับประถมศึกษาปีที่ ๕-๗ สังกัดกรมสามัญศึกษากระทรวงศึกษาธิการ มีนายสุนทรมณีศรีเป็นครูใหญ่</p>
         </div>
     </div>
-
+<!-- con -->
     <div class="main-down">
         <div class="main-down-logo">
             <h2>Happenings Foods</h2>
@@ -85,7 +85,7 @@ $img_url = $_SESSION['img_url'] ?? null;
             <img src="img/nool3.png" alt="">
         </div>
     </div>
-
+<!-- Footer -->
     <footer class="main-footer-1">
         <div class="main-footer">
             <h4>ติดต่อ</h4>
@@ -98,15 +98,9 @@ $img_url = $_SESSION['img_url'] ?? null;
             <p>ที่อยู่ : โรงเรียนเชียงกลางประชาพัฒนา</p>
             <p>สถานที่ : 1080 ตำบล เชียงกลาง อำเภอ เชียงกลาง น่าน 55160</p>
         </div>
-
     </footer>
 
-
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
 
 </body>
 

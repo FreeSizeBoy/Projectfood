@@ -106,6 +106,8 @@ function updateUser($conn, $id, $username, $email, $firstname, $lastname, $role 
 
 $user = updateUser($conn, $id, $username, $email, $firstname, $lastname, $role , $nickname, $tel , $password , $student_id, $room , $imageUrl);
 
+
+
 if ($user === 'duplicate') {
     echo json_encode([
         'status' => false,
@@ -121,6 +123,8 @@ if ($user === null) {
     ]);
     return;
 }
+
+$_SESSION["username"] = $user['username'];
 
 echo json_encode([
     'status' => true,

@@ -22,6 +22,7 @@
             <li><a href="order">คำสั่งซื้อ</a></li>
             <li><a href="report">รายงานยอดขาย</a></li>
             <li><a href="setting">จัดการร้านอาหาร</a></li>
+            <li><a href="dashboard_m">เปลี่ยนไปยังหน้าโทรศัพท์</a></li>
             <li><a href="<?= ROOT_URL ?>/api/logout">ออกจากระบบ</a></li>
         </ul>
     </div>
@@ -30,27 +31,33 @@
             <h1>ยินดีต้อนรับสู่ Dashboard ของร้านอาหาร</h1>
         </header>
         <section class="dashboard">
-            <h2>จัดการเมนู <button class="Add" data-action="Add" onclick="openAddModal()">เพิ่ม</button></h2>
-            <table class="dashboard-table" id="menuTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>ร้านค้าที่</th>
-                        <th>ชื่อเมนู</th>
-                        <th>รูป</th>
-                        <th>ราคา</th>
-                        <th>สต็อก</th>
-                        <th>ประเภค</th>
-                        <th>แก้ไข</th>
-                        <th>ลบ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Rows will be added dynamically here -->
-                </tbody>
-            </table>
-        </section>
+    <h2>จัดการเมนู <button class="Add" data-action="Add" onclick="openAddModal()">เพิ่ม</button></h2>
+    <table class="dashboard-table" id="menuTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ร้านค้าที่</th>
+                <th>ชื่อเมนู</th>
+                <th>รูป</th>
+                <th>ราคา</th>
+                <th>สต็อก</th>
+                <th>ประเภค</th>
+                <th>แก้ไข</th>
+                <th>ลบ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added dynamically here -->
+        </tbody>
+    </table>
 
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <button class="prev-page" disabled>ก่อนหน้า</button>
+        <span class="page-info">หน้าที่ 1 จาก 1</span>
+        <button class="next-page">ถัดไป</button>
+    </div>
+</section>
         <!-- Modal แก้ไขเมนู -->
         <div id="editMenuModal" class="modal">
             <div class="modal-content">
@@ -61,7 +68,7 @@
                     <label for="shop_id">ร้านค้าที่:</label>
                     <input type="text" id="editShopresId" name="shop_id">
                     <label for="menuname">ชื่อเมนู:</label>
-                    <input type="text" id="editMenusName" name="menuname" required>    
+                    <input type="text" id="editMenusName" name="menuname" required>
                     <label for="type">ประเภท:</label>
                     <input type="text" id="type" name="type" required>
                     <label for="price">ราคา:</label>
@@ -107,6 +114,7 @@
             const file = document.getElementById(inputId).files[0];
             const img = document.getElementById(imgId);
             if (file && img) {
+                //สร้าง FileReader และอ่านไฟล์:
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     img.src = e.target.result;
@@ -121,8 +129,8 @@
                 url: '<?= ROOT_URL ?>/api/menus',
                 type: 'GET',
                 success: function(response) {
-                    response = JSON.parse(response);
                     console.log(response);
+                    response = JSON.parse(response);
                     if (response.status) {
                         const menus = response.data;
                         const table = $('#menuTable');
@@ -227,7 +235,6 @@
                     });
                 }
             });
-
             // Handle form submission for editing
             $('#editMenuForm').on('submit', function(e) {
                 e.preventDefault();
@@ -258,7 +265,6 @@
                     }
                 });
             });
-
             // Handle form submission for adding
             $('#AddMenuForm').on('submit', function(e) {
                 e.preventDefault();
@@ -289,17 +295,89 @@
                     }
                 });
             });
-
             // Close modals
             $('.modal .close').on('click', function() {
                 $(this).closest('.modal').hide();
             });
-
             window.openAddModal = function() {
                 $('#AddMenuModal').show();
             }
         });
+
+        $(document).ready(() => {
+    const itemsPerPage = 10;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    function loadMenus(page) {
+        $.ajax({
+            url: '<?= ROOT_URL ?>/api/menus',
+            type: 'GET',
+            success: function(response) {
+                response = JSON.parse(response);
+                if (response.status) {
+                    const menus = response.data;
+                    totalPages = Math.ceil(menus.length / itemsPerPage);
+                    displayMenus(menus.slice((page - 1) * itemsPerPage, page * itemsPerPage));
+                    updatePagination();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: response.massage
+                    });
+                }
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด'
+                });
+            }
+        });
+    }
+
+    function displayMenus(menus) {
+        const tbody = $('#menuTable').find('tbody');
+        tbody.empty();
+        menus.forEach(menu => {
+            tbody.append(`
+                <tr>
+                    <td>${menu.id}</td>
+                    <td>${menu.shop_id}</td>
+                    <td>${menu.menuname}</td>
+                    <td><img src="<?= FOOD_UPLOAD_DIR ?>${menu.image_url}" alt="Profile" id="profile-img" class="img-thumbnail" style="width: 180px; height: 100px;  cursor: pointer;"></td>
+                    <td>${menu.price}</td>
+                    <td>${menu.stock}</td>
+                    <td>${menu.type}</td>
+                    <td><button data-id="${menu.id}" data-action="Edit" class="edit-button">🖉</button></td>
+                    <td><button data-id="${menu.id}" data-action="Delete" class="delete-button">🗑️</button></td>
+                </tr>
+            `);
+        });
+    }
+
+    function updatePagination() {
+        $('.page-info').text(`หน้าที่ ${currentPage} จาก ${totalPages}`);
+        $('.prev-page').prop('disabled', currentPage === 1);
+        $('.next-page').prop('disabled', currentPage === totalPages);
+    }
+
+    $('.prev-page').click(() => {
+        if (currentPage > 1) {
+            currentPage--;
+            loadMenus(currentPage);
+        }
+    });
+
+    $('.next-page').click(() => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            loadMenus(currentPage);
+        }
+    });
+
+    loadMenus(currentPage);
+});
     </script>
 </body>
-
 </html>

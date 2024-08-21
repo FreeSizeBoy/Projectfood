@@ -26,6 +26,7 @@ require_once("database.php");
     }
     $_SESSION["id"] = $user['id'];
     $_SESSION["role"] = $user['role'];
+    $_SESSION["username"] = $user['username'];
     $_SESSION["img_url"] =  USER_UPLOAD_DIR . "/" .  $user['img_url'];
 
     echo json_encode([

@@ -79,7 +79,6 @@ if (isset($_SESSION['id'])) {
 </body>
 </html>
 
-
     <script>
         $('[data-form="login"]').on('submit', (e) => {
             e.preventDefault();

@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Charmonman:wght@400;700&family=Kanit:wght@300;400;600;700&display=swap');
+
+body {
+    font-family: 'Kanit', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #2980b9, #6dd5fa);
+    color: #fff;
+}
+
+.payment-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #2c3e50;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-container::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.1), transparent 70%);
+    z-index: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #f39c12;
+    margin-bottom: 30px;
+    font-size: 32px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 1;
+    position: relative;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    z-index: 1;
+    position: relative;
+}
+
+.payment-option {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+
+.payment-option input {
+    margin-right: 15px;
+    accent-color: #f39c12;
+}
+
+.payment-details {
+    text-align: center;
+    margin-bottom: 30px;
+    z-index: 1;
+    position: relative;
+}
+
+.qr-code {
+    display: block;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.qr-code img {
+    max-width: 180px;
+    border: 4px solid #f39c12;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.qr-code img:hover {
+    transform: scale(1.1);
+}
+
+.upload-slip {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.upload-slip label {
+    display: block;
+    font-size: 18px;
+    color: #f39c12;
+    margin-bottom: 10px;
+}
+
+.upload-slip input[type="file"] {
+    display: block;
+    margin: 15px auto;
+    border: 2px solid #f39c12;
+    border-radius: 8px;
+    padding: 10px;
+    background: #ecf0f1;
+    color: #333;
+    font-size: 16px;
+    z-index: 1;
+    position: relative;
+}
+
+.total-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f39c12;
+    text-align: center;
+    margin-bottom: 30px;
+    z-index: 1;
+    position: relative;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    z-index: 1;
+    position: relative;
+}
+
+.buttons button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.buttons #confirm-payment {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: #fff;
+}
+
+.buttons #confirm-payment:hover {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    transform: scale(1.05);
+}
+
+.buttons #cancel-payment {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+}
+
+.buttons #cancel-payment:hover {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+    .payment-container {
+        padding: 20px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .buttons button {
+        margin-bottom: 15px;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .buttons button:last-child {
+        margin-bottom: 0;
+    }
+}

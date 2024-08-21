@@ -39,7 +39,19 @@ if ($imageUrl) {
     $imageUrl = $shop['image_url'] ?? null;
 }
 
-$shop = updateShop($conn, $id, $owner_id, $shopname, $imageUrl);
+$qrcode = $_FILES['qrcode']["name"] ?? null;
+
+if ($qrcode) {
+    $qrcode = uploadFile($_FILES['qrcode'], PAYMENT_UPLOAD_DIR);
+    if (!$qrcode['status']) {
+        echo json_encode($qrcode);        return;
+    }
+    $qrcode = $qrcode['filename']; 
+} else {
+    $qrcode = $shop['qrcode'] ?? null;
+}
+
+$shop = updateShop($conn, $id, $owner_id, $shopname, $imageUrl, $qrcode);
 
 if ($shop === null) {
     echo json_encode([

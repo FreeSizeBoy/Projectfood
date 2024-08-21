@@ -17,14 +17,13 @@
     ?>
     <div class="menu-main">
         <div class="menu-mains">
-            <h2>เมนู(Menu)</h2>
-            <a href="menu">ทั้งหมด</a>
+            <a href="menu" class="active">ทั้งหมด</a>
             <a href="menu1">ร้านข้าวแกง</a>
             <a href="menu2">ร้านก๋วยเตี๋ยว</a>
         </div>
     </div>
-<!-- ร้านที่ 1 -->
-<div class="menu-items">
+
+<!-- <div class="menu-items">
             <h2>ร้านข้าวแกง ร้านที่ 1</h2>
         </div>
         <div class="menu-itemss">
@@ -55,7 +54,7 @@
             </div>
         </div>
     </div>
-<!-- ร้านที่ 2 -->
+
 <div class="menu-items">
             <h2>ร้านข้าวแกง ร้านที่ 2</h2>
         </div>
@@ -75,7 +74,7 @@
                 <h4>ไข่ลูกเขย 20 บาท</h4>
                 <button type="button">สั่งซื้อ</button>
             </div>
-    </div>
+    </div> -->
 
     <footer class="main-footer-1">
         <div class="main-footer">
