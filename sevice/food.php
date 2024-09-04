@@ -11,7 +11,7 @@ function getMenusById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getMenus($conn, $page = 1, $limit = 10, $search = '', $shopId = null)
+function getMenus($conn, $page = 1, $limit = 10, $search = '', $filter = '' , $shopId = null )
 {
     $offset = ($page - 1) * $limit;
 
@@ -26,6 +26,10 @@ function getMenus($conn, $page = 1, $limit = 10, $search = '', $shopId = null)
         }
         $sql .= " AND shop_id = ?";
     }
+
+    // if(!empty($filter)){
+    //     $sql = $sql . " AND shops.owner_id = '$filter' ";
+    // }
 
     $sql .= " LIMIT ? OFFSET ?";
 

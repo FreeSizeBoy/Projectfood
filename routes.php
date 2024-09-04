@@ -30,6 +30,7 @@ get('/setting', 'pages/setting.php');
 get('/order_history', 'pages/order_history.php');
 get('/cart', 'pages/cart.php');
 get('/payment', 'pages/payment.php');
+get('/expenses', 'pages/expenses.php');
 
 // get('/app/css/nav-bar', 'css/nav-bar.css');
 // get('/app/css/side-bar', 'css/side-bar.css');
@@ -64,7 +65,13 @@ post('/api/orders/create', 'apis/orders/create.php');
 post('/api/orders/$id/edit', 'apis/orders/update.php');
 post('/api/orders/$id/delete', 'apis/orders/delete.php');
 
+get('/api/expenses', 'apis/expenses/get-all.php');
+get('/api/expenses/$id', 'apis/expenses/get-single.php');
+post('/api/expenses/create', 'apis/expenses/create.php');
+post('/api/expenses/$id/edit', 'apis/expenses/update.php');
+post('/api/expenses/$id/delete', 'apis/expenses/delete.php');
 
+get('/api/revenue', 'apis/Totalprice/revenue.php');
 
 // get('/member/login', 'page/AuthSignin.php');
 // get('/member/register', 'page/AuthSignup.php');

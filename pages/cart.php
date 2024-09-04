@@ -34,31 +34,31 @@
     <script>
         const API_URL = '<?= ROOT_URL ?>/api/menus/';
 
-async function updateCart() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
+        async function updateCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
 
-    cartItems.innerHTML = ''; // Clear old items
-    let total = 0;
+            cartItems.innerHTML = ''; // Clear old items
+            let total = 0;
 
-    cart.sort((a, b) => a.id - b.id);
+            cart.sort((a, b) => a.id - b.id);
 
-    for (const item of cart) {
-        try {
-            const response = await fetch(`${API_URL}${item.id}`);
-            const data = await response.json();
+            for (const item of cart) {
+                try {
+                    const response = await fetch(`${API_URL}${item.id}`);
+                    const data = await response.json();
 
-            if (data.status) {
-                const menuItem = data.data;
-                const price = parseFloat(menuItem.price); // แปลงราคาเป็นตัวเลข
-                const extraPrice = item.extra || 0; // ราคาที่เพิ่มจาก checkbox
-                const itemTotal = (price + extraPrice) * item.quantity; // คำนวณราคาทั้งหมด
-                total += itemTotal;
+                    if (data.status) {
+                        const menuItem = data.data;
+                        const price = parseFloat(menuItem.price); // แปลงราคาเป็นตัวเลข
+                        const extraPrice = item.extra || 0; // ราคาที่เพิ่มจาก checkbox
+                        const itemTotal = (price + extraPrice) * item.quantity; // คำนวณราคาทั้งหมด
+                        total += itemTotal;
 
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
-                cartItem.innerHTML = `
+                        const cartItem = document.createElement('div');
+                        cartItem.className = 'cart-item';
+                        cartItem.innerHTML = `
                     <img src="<?= FOOD_UPLOAD_DIR ?>${menuItem.image_url}" alt="${menuItem.menuname}">
                     <div class="cart-item-details">
                         <h2 class="cart-item-name">${menuItem.menuname}</h2>
@@ -77,139 +77,137 @@ async function updateCart() {
                         </div>
 
                 `;
-                cartItems.appendChild(cartItem);
+                        cartItems.appendChild(cartItem);
+                    }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
             }
-        } catch (error) {
-            console.error('Error fetching data:', error);
+
+            cartTotal.textContent = `฿${total}`;
         }
-    }
 
-    cartTotal.textContent = `฿${total}`;
-}
+        function addToCart(shopId, foodId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-function addToCart(shopId, foodId) {
-    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            // Remove old cart items from the same shop
+            cart = cart.filter(item => item.shopId == shopId);
 
-    // Remove old cart items from the same shop
-    cart = cart.filter(item => item.shopId == shopId);
+            var found = false;
 
-    var found = false;
+            cart = cart.map(function(item) {
+                if (item.id == foodId) {
+                    item.quantity += 1;
+                    found = true;
+                }
+                return item;
+            });
 
-    cart = cart.map(function(item) {
-        if (item.id == foodId) {
-            item.quantity += 1;
-            found = true;
-        }
-        return item;
-    });
-
-    if (!found) {
-        cart.push({
-            shopId: shopId,
-            id: foodId,
-            quantity: 1
-        });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart();
-}
-
-function minusToCart(shopId, foodId) {
-    var cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Remove old cart items from the same shop
-    cart = cart.filter(item => item.shopId == shopId);
-    cart = cart.map(function(item) {
-        if (item.id == foodId) {
-            item.quantity -= 1;
-        }
-        return item;
-    });
-
-    cart = cart.filter(item => item.quantity > 0);
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart();
-}
-
-function removeFromCart(shopId, foodId) {
-    var cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Remove old cart items from the same shop
-    cart = cart.filter(item => item.shopId == shopId || (item.id != foodId));
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCart();
-}
-
-function clearCart() {
-    localStorage.removeItem('cart');
-    updateCart();
-}
-
-// Set up event handlers for increase and decrease buttons
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('increase')) {
-        var shopId = event.target.getAttribute('data-shopid');
-        var foodId = event.target.getAttribute('data-foodid');
-        addToCart(shopId, foodId);
-    } else if (event.target.classList.contains('decrease')) {
-        var shopId = event.target.getAttribute('data-shopid');
-        var foodId = event.target.getAttribute('data-foodid');
-        minusToCart(shopId, foodId);
-    } else if (event.target.id === 'clear-cart-btn') {
-        clearCart();
-    }
-});
-
-// Handle close button click
-document.getElementById('close-btn').addEventListener('click', function() {
-    window.location.href = 'menu';
-});
-
-// Update cart on page load
-document.addEventListener('DOMContentLoaded', function() {
-    updateCart();
-});
-
-// Handle textarea and checkbox changes
-document.addEventListener('input', function(event) {
-    if (event.target.classList.contains('extra-text')) {
-        var foodId = event.target.getAttribute('data-foodid');
-        var extraText = event.target.value;
-        var cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        cart = cart.map(item => {
-            if (item.id == foodId) {
-                item.extraText = extraText;
+            if (!found) {
+                cart.push({
+                    shopId: shopId,
+                    id: foodId,
+                    quantity: 1
+                });
             }
-            return item;
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function minusToCart(shopId, foodId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Remove old cart items from the same shop
+            cart = cart.filter(item => item.shopId == shopId);
+            cart = cart.map(function(item) {
+                if (item.id == foodId) {
+                    item.quantity -= 1;
+                }
+                return item;
+            });
+
+            cart = cart.filter(item => item.quantity > 0);
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function removeFromCart(shopId, foodId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Remove old cart items from the same shop
+            cart = cart.filter(item => item.shopId == shopId || (item.id != foodId));
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function clearCart() {
+            localStorage.removeItem('cart');
+            updateCart();
+        }
+
+        // Set up event handlers for increase and decrease buttons
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('increase')) {
+                var shopId = event.target.getAttribute('data-shopid');
+                var foodId = event.target.getAttribute('data-foodid');
+                addToCart(shopId, foodId);
+            } else if (event.target.classList.contains('decrease')) {
+                var shopId = event.target.getAttribute('data-shopid');
+                var foodId = event.target.getAttribute('data-foodid');
+                minusToCart(shopId, foodId);
+            } else if (event.target.id === 'clear-cart-btn') {
+                clearCart();
+            }
         });
 
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-});
-
-document.addEventListener('change', function(event) {
-    if (event.target.type === 'checkbox') {
-        var foodId = event.target.getAttribute('data-foodid');
-        var isChecked = event.target.checked;
-        var cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        cart = cart.map(item => {
-            if (item.id == foodId) {
-                item.extra = isChecked ? 10 : 0; // เพิ่มราคาหรือคืนราคาเป็น 0
-            }
-            return item;
+        // Handle close button click
+        document.getElementById('close-btn').addEventListener('click', function() {
+            window.location.href = 'menu';
         });
 
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCart();
-    }
-});
+        // Update cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCart();
+        });
 
+        // Handle textarea and checkbox changes
+        document.addEventListener('input', function(event) {
+            if (event.target.classList.contains('extra-text')) {
+                var foodId = event.target.getAttribute('data-foodid');
+                var extraText = event.target.value;
+                var cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+                cart = cart.map(item => {
+                    if (item.id == foodId) {
+                        item.extraText = extraText;
+                    }
+                    return item;
+                });
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+            }
+        });
+
+        document.addEventListener('change', function(event) {
+            if (event.target.type === 'checkbox') {
+                var foodId = event.target.getAttribute('data-foodid');
+                var isChecked = event.target.checked;
+                var cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+                cart = cart.map(item => {
+                    if (item.id == foodId) {
+                        item.extra = isChecked ? 10 : 0; // เพิ่มราคาหรือคืนราคาเป็น 0
+                    }
+                    return item;
+                });
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart();
+            }
+        });
     </script>
 </body>
 

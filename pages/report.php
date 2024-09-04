@@ -1,6 +1,48 @@
+<?php
+
+require_once "database.php";
+
+// รับค่า shop_id จาก session
+$shopId = $_SESSION['shop_id'];
+
+// เริ่มต้นค่าตัวแปรยอดขายและรายจ่าย
+$totalSales = $dailySales = $monthlySales = 0;
+$totalExpenses = $dailyExpenses = $monthlyExpenses = 0;
+
+// Queries สำหรับรายรับและรายจ่าย
+// ยอดขายรวม
+$totalSalesQuery = "SELECT SUM(total_price) AS total FROM orders WHERE status = 'complete' AND shop_id = ?";
+$dailySalesQuery = "SELECT SUM(total_price) AS total FROM orders WHERE status = 'complete' AND shop_id = ? AND DATE(createdAt) = CURDATE()";
+$monthlySalesQuery = "SELECT SUM(total_price) AS total FROM orders WHERE status = 'complete' AND shop_id = ? AND MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE())";
+
+// รายจ่ายรวม
+$totalExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ?";
+$dailyExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ? AND DATE(createdAt) = CURDATE()";
+$monthlyExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ? AND MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE())";
+
+// ฟังก์ชันสำหรับประมวลผลคำสั่ง SQL และส่งค่า
+function getAmount($conn, $query, $shopId) {
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $shopId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row ? $row['total'] : 0;
+}
+
+// คำนวณยอดขายและรายจ่าย
+$totalSales = getAmount($conn, $totalSalesQuery, $shopId);
+$dailySales = getAmount($conn, $dailySalesQuery, $shopId);
+$monthlySales = getAmount($conn, $monthlySalesQuery, $shopId);
+
+$totalExpenses = getAmount($conn, $totalExpensesQuery, $shopId);
+$dailyExpenses = getAmount($conn, $dailyExpensesQuery, $shopId);
+$monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
+
+?>
+
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,26 +50,49 @@
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-    <div class="sidebar">
-        <h2>Dashboard</h2>
-        <a href="profile">แก้ไขโปรไฟล์ Admin</a>
-        <ul>
-            <li><a href="dashboard">หน้าหลัก</a></li>
-            <li><a href="manage">จัดการสมาชิก</a></li>
-            <li><a href="food">จัดการเมนู</a></li>
-            <li><a href="order">คำสั่งซื้อ</a></li>
-            <li><a href="report">รายงานยอดขาย</a></li>
-            <li><a href="setting">จัดการร้านอาหาร</a></li>
-            <li><a href="dashboard_m">เปลี่ยนไปยังหน้าโทรศัพท์</a></li>
-            <li><a href="<?= ROOT_URL ?>/api/logout">ออกจากระบบ</a></li>
-        </ul>
-    </div>
+    <?php include_once "component/dashborad.php"; ?>
+
     <div class="main-content">
         <header>
             <h1>ยินดีต้อนรับสู่ Dashboard ของร้านอาหาร</h1>
         </header>
+        <!-- ส่วนแสดงผลข้อมูล -->
+        <section class="sales-summary">
+            <!-- ยอดขายรวม -->
+            <div class="summary-card">
+                <h3>ยอดขายรวม</h3>
+                <p>฿<?php echo number_format($totalSales, 2); ?></p>
+            </div>
+            <!-- ยอดขายรายวัน -->
+            <div class="summary-card">
+                <h3>ยอดขายรายวัน</h3>
+                <p>฿<?php echo number_format($dailySales, 2); ?></p>
+            </div>
+            <!-- ยอดขายรายเดือน -->
+            <div class="summary-card">
+                <h3>ยอดขายรายเดือน</h3>
+                <p>฿<?php echo number_format($monthlySales, 2); ?></p>
+            </div>
+        </section>
+
+        <section class="sales-summary">
+            <!-- รายจ่ายรวม -->
+            <div class="summary-card">
+                <h3>รายจ่ายรวม</h3>
+                <p>฿<?php echo number_format($totalExpenses, 2); ?></p>
+            </div>
+            <!-- รายจ่ายรายวัน -->
+            <div class="summary-card">
+                <h3>รายจ่ายรายวัน</h3>
+                <p>฿<?php echo number_format($dailyExpenses, 2); ?></p>
+            </div>
+            <!-- รายจ่ายรายเดือน -->
+            <div class="summary-card">
+                <h3>รายจ่ายรายเดือน</h3>
+                <p>฿<?php echo number_format($monthlyExpenses, 2); ?></p>
+            </div>
+        </section>
         <section class="cards">
             <div class="card">
                 <h3>รายงานยอดขาย (ภาพรวม)</h3>
@@ -61,26 +126,24 @@
     <script>
         const ctx = document.getElementById('salesChart').getContext('2d');
 
-        const salesData = {
-            labels: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษาคม', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
-            datasets: [{
-                label: 'รายรับ',
-                data: [300, 500, 400, 700, 600, 900, 800, 900, 500, 400, 700, 300],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }, {
-                label: 'รายจ่าย',
-                data: [150, 200, 250, 300, 200, 350, 300, 600, 600, 600, 600, 600],
-                backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }]
-        };
-
         const salesChart = new Chart(ctx, {
             type: 'bar',
-            data: salesData,
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'รายรับ',
+                    data: [],
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'รายจ่าย',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
             options: {
                 responsive: true,
                 plugins: {
@@ -99,60 +162,60 @@
         });
 
         document.getElementById('monthBtn').addEventListener('click', function() {
-            updateChart(
-                ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษาคม', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
-                [300, 500, 400, 700, 600, 900, 800, 900, 500, 400, 700, 300],
-                [150, 200, 250, 300, 200, 350, 300, 600, 600, 600, 600, 600]
-            );
-            updateTable('รายเดือน', [300, 500, 400, 700, 600, 900, 800, 900, 500, 400, 700, 300], [150, 200, 250, 300, 200, 350, 300, 600, 600, 600, 600, 600]);
+            fetchData('month');
         });
 
         document.getElementById('yearBtn').addEventListener('click', function() {
-            updateChart(['2023'], [5000], [2000]);
-            updateTable('รายปี', [5000], [2000]);
+            fetchData('year');
         });
 
         document.getElementById('dayBtn').addEventListener('click', function() {
-            updateChart(
-                ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัส', 'ศุกร์', 'เสาร์', 'อาทิตย์'],
-                [100, 200, 150, 300, 250, 400, 350],
-                [50, 100, 75, 150, 125, 200, 175]
-            );
-            updateTable('รายวัน', [100, 200, 150, 300, 250, 400, 350], [50, 100, 75, 150, 125, 200, 175]);
+            fetchData('day');
         });
 
-        function updateChart(labels, incomeData, expenseData) {
-            salesChart.data.labels = labels;
-            salesChart.data.datasets[0].data = incomeData;
-            salesChart.data.datasets[1].data = expenseData;
-            salesChart.update();
-        }
+        function fetchData(period) {
+        const shopId = `<?= $_SESSION['shop_id'] ?>`; // Ensure correct shop_id is used
+        fetch(`<?= ROOT_URL ?>/api/revenue?year=2024&period=${period}&shop_id=${shopId}`)
+            .then(response => response.json())
+            .then(data => {
+                updateChart(data.labels, data.income, data.expenses);
+                updateTable(data.labels, data.income, data.expenses);
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
-        function updateTable(period, incomeData, expenseData) {
-            const reportData = document.getElementById('reportData');
-            reportData.innerHTML = '';
+    function updateChart(labels, incomeData, expenseData) {
+        salesChart.data.labels = labels;
+        salesChart.data.datasets[0].data = incomeData;
+        salesChart.data.datasets[1].data = expenseData;
+        salesChart.update();
+    }
 
-            incomeData.forEach((income, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${period}</td>
-                    <td>รายรับ</td>
-                    <td>฿${income}</td>
-                `;
-                reportData.appendChild(row);
+    function updateTable(labels, incomeData, expenseData) {
+        const reportData = document.getElementById('reportData');
+        reportData.innerHTML = '';
 
-                if (index < expenseData.length) { // Ensure there is corresponding expense data
-                    const expenseRow = document.createElement('tr');
-                    expenseRow.innerHTML = `
-                        <td>${period}</td>
-                        <td>รายจ่าย</td>
-                        <td>฿${expenseData[index]}</td>
-                    `;
-                    reportData.appendChild(expenseRow);
-                }
-            });
-        }
+        labels.forEach((label, index) => {
+            const income = incomeData[index] ? incomeData[index] : 0;
+            const expense = expenseData[index] ? expenseData[index] : 0;
+
+            const incomeRow = document.createElement('tr');
+            incomeRow.innerHTML = `
+                <td>${label}</td>
+                <td>รายรับ</td>
+                <td>฿${income.toLocaleString()}</td>
+            `;
+            reportData.appendChild(incomeRow);
+
+            const expenseRow = document.createElement('tr');
+            expenseRow.innerHTML = `
+                <td>${label}</td>
+                <td>รายจ่าย</td>
+                <td>฿${expense.toLocaleString()}</td>
+            `;
+            reportData.appendChild(expenseRow);
+        });
+    }
     </script>
 </body>
-
 </html>

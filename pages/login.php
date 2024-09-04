@@ -1,12 +1,12 @@
 <?php
 
 if (isset($_SESSION['id'])) {
-    if ($_SESSION['role'] === 'super_admin') {
+    if ($_SESSION['role'] === 'super_admin' || $_SESSION['role'] === 'admin') {
         header('Location: ' . ROOT_URL . '/dashboard');
     } else {
         header('Location: ' . ROOT_URL);
     }
-}
+} 
 
 ?>
 

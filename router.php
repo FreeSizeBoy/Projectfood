@@ -75,6 +75,8 @@ function route($route, $path_to_include)
   $request_url = rtrim($request_url, '/');
   // Remove query string
   $request_url = strtok($request_url, '?');
+  // Remove trailing slash
+  $request_url = rtrim($request_url, '/');
   // Split Route
   $route_parts = explode('/', $route);
   // Split Request URL

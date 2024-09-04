@@ -149,7 +149,7 @@ if (isset($_SESSION['id'])) {
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
-                            location.reload();
+                            location.href='<?= ROOT_URL ?>/login';
                         });
                     } else {
                         $('button[type="submit"]').prop('disabled', false);

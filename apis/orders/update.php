@@ -6,7 +6,7 @@ require_once 'sevice/upload.php';
 $id = $parameters[0];
 
 // ตรวจสอบการอนุญาต (ถ้าต้องการ)
-if ($_SESSION['role'] !== 'super_admin') {
+if ($_SESSION['role'] !== 'super_admin' && $_SESSION['role'] !== 'admin') {
     echo json_encode([
         'status' => false,
         'message' => 'ไม่สามารถเปลี่ยนสถานะคำสั่งซื้อได้'

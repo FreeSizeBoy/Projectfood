@@ -10,20 +10,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Dashboard</h2>
-        <a href="profile">แก้ไขโปรไฟล์ Admin</a>
-        <ul>
-            <li><a href="dashboard">หน้าหลัก</a></li>
-            <li><a href="manage">จัดการสมาชิก</a></li>
-            <li><a href="food">จัดการเมนู</a></li>
-            <li><a href="order">คำสั่งซื้อ</a></li>
-            <li><a href="report">รายงานยอดขาย</a></li>
-            <li><a href="setting">จัดการร้านอาหาร</a></li>
-            <li><a href="dashboard_m">เปลี่ยนไปยังหน้าโทรศัพท์</a></li>
-            <li><a href="<?= ROOT_URL ?>/api/logout">ออกจากระบบ</a></li>
-        </ul>
-    </div>
+
+<?php
+    include_once "component/dashborad.php";
+    $shop_id = $_SESSION['shop_id'] ?? null;
+    $role = $_SESSION['role'];
+?>
+
     <div class="main-content">
         <header>
             <h1>ยินดีต้อนรับสู่ Dashboard ของร้านอาหาร</h1>
@@ -132,7 +125,7 @@
         $(document).ready(() => {
     // Load order data
     $.ajax({
-        url: '<?= ROOT_URL ?>/api/orders',
+        url: '<?= ROOT_URL ?>/api/orders<?= $role == 'admin' ? "?filter=$shop_id" : "" ?>',
         type: 'GET',
         success: function(response) {
             console.log(response);

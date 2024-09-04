@@ -5,26 +5,27 @@ $username = $_SESSION['username'] ?? null;
 ?>
 
 <div class="header">
-        <div class="d-flex">
-
-            <div class="menu">
-                <div class="img-logo">
-                    <img src="img/logo (3).png" alt="">
-                </div>
-                <div><a href="<?= ROOT_URL ?>">หน้าหลัก</a></div>
-                <div><a href="menu">เมนู</a></div>
+    <div class="d-flex">
+        <div class="menu">
+            <div class="img-logo">
+                <img src="img/logo (3).png" alt="">
             </div>
+            <div><a href="<?= ROOT_URL ?>">หน้าหลัก</a></div>
+            <div><a href="menu">เมนู</a></div>
         </div>
-        <div class="menu">
-            <h2>โรงเรียนเชียงกลางประชาพัฒนา</h2>
-        </div>
-        <div class="menu">
-
+    </div>
+    <div class="menu">
+        <h2>โรงเรียนเชียงกลางประชาพัฒนา</h2>
+    </div>
+    <div class="menu">
         <?php if ($id) : ?>
             <h5 class="username"><?= $username ?></h5>
             <div class="dropdown">
                 <img src="<?= $img_url ?>" alt="Profile" id="profile-img" class="img-thumbnail" style="width: 55px; height: 55px; cursor: pointer;">
-                <a class="cart" href="<?= ROOT_URL ?>/cart">🛒</a>
+                <a class="cart" href="<?= ROOT_URL ?>/cart">
+                    🛒
+                    <span id="cart-count" class="badge bg-danger">0</span>
+                </a>
                 <div class="dropdown-menu" aria-labelledby="profile-img">
                     <a class="dropdown-item" href="<?= ROOT_URL ?>/profile">แก้ไขโปรไฟล์</a>
                     <a class="dropdown-item" href="<?= ROOT_URL ?>/order_history">ประวัติการสั่งซื้อ</a>
@@ -34,14 +35,11 @@ $username = $_SESSION['username'] ?? null;
         <?php else : ?>
             <div><a href="register">สมัคร</a></div>
             <div><a href="login">เข้าสู่ระบบ</a></div>
-
         <?php endif; ?>
-
-        
-
-
-        </div>
     </div>
+</div>
+
+
 
     <script>
    document.addEventListener('DOMContentLoaded', function () {

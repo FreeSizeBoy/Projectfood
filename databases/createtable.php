@@ -91,3 +91,15 @@ $sql = "CREATE TABLE IF NOT EXISTS orders_details(
 if (!$conn->query($sql)) {
     die("เชื่อมต่อไม่ได้");
 }
+
+$sql = "CREATE TABLE IF NOT EXISTS Expenses(
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY ,
+    shop_id INT(6) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    priceout INT(6) NOT NULL,
+    note VARCHAR(255) NOT NULL
+    )";
+
+if (!$conn->query($sql)) {
+die("เชื่อมต่อไม่ได้");
+}

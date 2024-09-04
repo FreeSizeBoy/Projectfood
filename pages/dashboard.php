@@ -10,7 +10,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-    <div class="sidebar">
+
+<?php
+
+    include_once "component/dashborad.php"
+
+?>
+    <!-- <div class="sidebar">
         <h2>Dashboard</h2>
         <a href="profile">แก้ไขโปรไฟล์ Admin</a>
         <ul>
@@ -23,7 +29,7 @@
             <li><a href="dashboard_m">เปลี่ยนไปยังหน้าโทรศัพท์</a></li>
             <li><a href="<?= ROOT_URL ?>/api/logout">ออกจากระบบ</a></li>
         </ul>
-    </div>
+    </div> -->
     <div class="main-content">
         <header>
             <h1>ประวัติการสั่งซื้อ</h1>

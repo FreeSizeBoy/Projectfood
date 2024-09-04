@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,13 @@
     <link rel="stylesheet" href="css/dashboard_m.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
 </head>
+
 <body>
+    <?php
+    $shop_id = $_SESSION['shop_id'] ?? null;
+    $role = $_SESSION['role'];
+    ?>
     <div class="dashboard-container">
         <header class="dashboard-header">
             <h1>คำสั่งซื้อทั้งหมด</h1>
@@ -41,19 +46,25 @@
 
             function fetchOrders() {
                 $.ajax({
-                    url: '<?= ROOT_URL ?>/api/orders',
+                    url: '<?= ROOT_URL ?>/api/orders<?= $role == 'admin' ? "?filter=$shop_id" : "" ?>',
                     type: 'GET',
                     dataType: 'json',
                     success: function(data) {
                         if (data.status) {
-                            const orders = data.data;
+                            let orders = data.data;
+                            orders = orders.filter((order) => {
+                                if (order.status === 'complete') {
+                                    return false;
+                                } 
+                                return true;
+                            });
                             const previousOrders = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
                             const newOrders = getNewOrders(previousOrders, orders);
 
                             if (newOrders.length > 0) {
                                 showNewOrderAlert(newOrders);
                             }
-                            
+
                             // อัปเดตตารางและเก็บข้อมูลคำสั่งซื้อใหม่ใน localStorage
                             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(orders));
                             updateTable(orders);
@@ -86,7 +97,7 @@
                 Swal.fire({
                     imageUrl: imageUrl,
                     imageAlt: 'Slip Image',
-                    imageWidth: 600,  // กำหนดขนาดของรูปภาพ
+                    imageWidth: 600, // กำหนดขนาดของรูปภาพ
                     imageHeight: 400,
                     imageClass: 'img-fluid',
                     confirmButtonText: 'ปิด'
@@ -111,7 +122,7 @@
                         const row = `
                             <tr>
                                 <td>${order.username}</td>
-                                <td>${order.user_id}</td>
+                                <td>${order.room}</td>
                                 <td>${menuItems}</td>
                                 <td>฿${order.total_price}</td>
                                 <td>
@@ -163,7 +174,9 @@
                 $.ajax({
                     url: `<?= ROOT_URL ?>/api/orders/${id}/edit`,
                     type: 'POST',
-                    data: { status: status },
+                    data: {
+                        status: status
+                    },
                     success: function(result) {
                         result = JSON.parse(result);
                         if (result.status) {
@@ -211,4 +224,5 @@
         });
     </script>
 </body>
+
 </html>

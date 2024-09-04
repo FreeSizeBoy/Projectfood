@@ -24,7 +24,7 @@ function getOrdersById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getOrders($conn, $page = 1, $limit = 10, $search = '')
+function getOrders($conn, $page = 1, $limit = 10, $filter = '' ,$search = '')
 {
     $offset = ($page - 1) * $limit;
 
@@ -34,6 +34,7 @@ function getOrders($conn, $page = 1, $limit = 10, $search = '')
             orders.*, 
             users.username,
             users.nickname,
+            users.room,
             users.email,
             orders_details.menu_id,
             orders_details.price AS detail_price,
@@ -46,10 +47,14 @@ function getOrders($conn, $page = 1, $limit = 10, $search = '')
         JOIN users ON orders.user_id = users.id
         LEFT JOIN orders_details ON orders.id = orders_details.orders_id
         LEFT JOIN menus ON orders_details.menu_id = menus.id
-        WHERE users.username LIKE '%$search%'
-        LIMIT $limit OFFSET $offset
-    ";
+        WHERE users.username LIKE '%$search%' ";
 
+    if(!empty($filter)){
+        $sql = $sql . " AND orders.shop_id = '$filter' ";
+    }
+
+    $sql = $sql . "LIMIT $limit OFFSET $offset ";
+    
     $result = $conn->query($sql);
 
     $orders = [];
@@ -67,6 +72,7 @@ function getOrders($conn, $page = 1, $limit = 10, $search = '')
                 'createdAt' => $row['createdAt'],
                 'username' => $row['username'],
                 'nickname' => $row['nickname'],
+                'room' => $row['room'],
                 'email' => $row['email'],
                 'details' => []
             ];
