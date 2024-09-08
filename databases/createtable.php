@@ -29,7 +29,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows == 0) {
     $password = password_hash("12345", PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users(email, password, role, fname, lname, img_url, username) VALUES('super@men.com','$password','super_admin','FreeSize','Sombut','admin.png', 'Seksan')";
+    $sql = "INSERT INTO users(email, password, role, fname, lname, username) VALUES('super@men.com','$password','super_admin','FreeSize','Sombut', 'Seksan')";
 
     if (!$conn->query($sql)) {
         die("เชื่อมต่อไม่ได้");
@@ -43,7 +43,8 @@ $sql = "CREATE TABLE IF NOT EXISTS shops(
         shopname VARCHAR(255) NOT NULL,
         image_url VARCHAR(255) NOT NULL,
         qrcode VARCHAR(255) NOT NULL,
-        category VARCHAR(255) NOT NULL
+        category VARCHAR(255) NOT NULL,
+        status VARCHAR(255) NOT NULL
         )"; 
 
 if (!$conn->query($sql)) {

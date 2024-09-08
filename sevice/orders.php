@@ -122,9 +122,20 @@ function createOrdersV2($conn, $user_id, $shop_id, $menus, $slips)
 {
     // เริ่มต้น transaction
     $conn->begin_transaction();
- 
 
     try {
+        // ตรวจสอบสถานะของร้านค้า
+        $sql = "SELECT status FROM shops WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $shop_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $shopData = $result->fetch_assoc();
+
+        if ($shopData['status'] === 'ปิด') {
+            throw new Exception("ไม่สามารถสั่งซื้อได้ ร้านค้าปิดอยู่");
+        }
+
         // คำนวณราคาทั้งหมด
         $total_price = 0;
         $order_id = null;
@@ -142,23 +153,36 @@ function createOrdersV2($conn, $user_id, $shop_id, $menus, $slips)
         // แทรกรายละเอียดการสั่งซื้อ
         foreach ($menus as $menu) {
             // ดึงราคาเมนูจากฐานข้อมูล
-            $sql = "SELECT price FROM menus WHERE id = ?";
+            $sql = "SELECT price, stock, menuname FROM menus WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $menu['id']);
             $stmt->execute();
             $result = $stmt->get_result();
             $menuData = $result->fetch_assoc();
             $price = $menuData['price'];
+            $stock = $menuData['stock'];
+
+            // ตรวจสอบสต็อกเพียงพอหรือไม่
+            if ($stock < $menu['quantity']) {
+                throw new Exception("สต็อกไม่เพียงพอสำหรับเมนู " . $menuData['menuname']);
+            }
 
             // คำนวณราคาสำหรับรายการนี้
             $item_total_price = ($price + ($menu['extra'] ?? 0)) * $menu['quantity'];
             $total_price += $item_total_price;
 
             // แทรกรายละเอียดการสั่งซื้อ
-            $extra = isset($menu['extra']) ?  'พิเศษ' : 'ไม่พิเศษ'; // ใช้ค่าเริ่มต้นถ้าไม่มีค่า extra
+            $extra = isset($menu['extra']) ? 'พิเศษ' : 'ไม่พิเศษ'; // ใช้ค่าเริ่มต้นถ้าไม่มีค่า extra
             $sql = "INSERT INTO orders_details (orders_id, menu_id, price, amount, note, extra) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("iiiiss", $order_id, $menu['id'], $price , $menu['quantity'], $menu['extraText'], $extra);
+            $stmt->bind_param("iiiiss", $order_id, $menu['id'], $price, $menu['quantity'], $menu['extraText'], $extra);
+            $stmt->execute();
+
+            // ตัดสต็อกเมนู
+            $new_stock = $stock - $menu['quantity'];
+            $sql = "UPDATE menus SET stock = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $new_stock, $menu['id']);
             $stmt->execute();
         }
 
@@ -171,16 +195,19 @@ function createOrdersV2($conn, $user_id, $shop_id, $menus, $slips)
         // Commit transaction
         $conn->commit();
 
-        return getOrdersById($conn, $order_id);
+        return [
+            'status' => true,
+            'data' => getOrdersById($conn, $order_id)
+        ];
     } catch (Exception $e) {
-        echo $e;
         // Rollback transaction หากเกิดข้อผิดพลาด
         $conn->rollback();
-        return null;
+        return [
+            'status' => false,
+            'message' => $e->getMessage()
+        ];
     }
 }
-
-
 
 
 function updateOrders($conn, $id, $user_id, $menu_id, $price, $status, $slip)

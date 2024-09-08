@@ -45,38 +45,40 @@
             const LOCAL_STORAGE_KEY = 'ordersData';
 
             function fetchOrders() {
-                $.ajax({
-                    url: '<?= ROOT_URL ?>/api/orders<?= $role == 'admin' ? "?filter=$shop_id" : "" ?>',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data.status) {
-                            let orders = data.data;
-                            orders = orders.filter((order) => {
-                                if (order.status === 'complete') {
-                                    return false;
-                                } 
-                                return true;
-                            });
-                            const previousOrders = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
-                            const newOrders = getNewOrders(previousOrders, orders);
+    $.ajax({
+        url: '<?= ROOT_URL ?>/api/orders<?= $role == 'admin' ? "?filter=$shop_id" : "" ?>',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            if (data.status) {
+                let orders = data.data;
 
-                            if (newOrders.length > 0) {
-                                showNewOrderAlert(newOrders);
-                            }
+                // กรองเฉพาะสถานะที่ต้องการ เช่น pending, confirm
+                orders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
 
-                            // อัปเดตตารางและเก็บข้อมูลคำสั่งซื้อใหม่ใน localStorage
-                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(orders));
-                            updateTable(orders);
-                        } else {
-                            alert('ไม่สามารถดึงข้อมูลคำสั่งซื้อได้');
-                        }
-                    },
-                    error: function(error) {
-                        console.error('Error:', error);
+                const previousOrders = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
+
+                // หาก LocalStorage ยังไม่มีข้อมูล ให้แสดงแจ้งเตือนสำหรับรายการใหม่
+                if (previousOrders.length === 0) {
+                    const newOrders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
+
+                    if (newOrders.length > 0) {
+                        showNewOrderAlert(newOrders);
                     }
-                });
+                }
+
+                // อัปเดตตารางและเก็บข้อมูลคำสั่งซื้อใหม่ใน localStorage
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(orders));
+                updateTable(orders);
+            } else {
+                alert('ไม่สามารถดึงข้อมูลคำสั่งซื้อได้');
             }
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
 
             function getNewOrders(previousOrders, currentOrders) {
                 const previousIds = new Set(previousOrders.map(order => order.id));
@@ -84,14 +86,15 @@
             }
 
             function showNewOrderAlert(newOrders) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'มีรายการใหม่!',
-                    text: `มี ${newOrders.length} รายการใหม่`,
-                    confirmButtonText: 'ดูรายการ',
-                    onClose: () => fetchOrders() // รีเฟรชข้อมูลหลังจากปิดการแจ้งเตือน
-                });
-            }
+    Swal.fire({
+        icon: 'info',
+        title: 'มีรายการใหม่!',
+        text: `มี ${newOrders.length} รายการใหม่`,
+        confirmButtonText: 'ดูรายการ',
+        onClose: () => fetchOrders() // รีเฟรชข้อมูลหลังจากปิดการแจ้งเตือน
+    });
+}
+
 
             function showLargeImage(imageUrl) {
                 Swal.fire({

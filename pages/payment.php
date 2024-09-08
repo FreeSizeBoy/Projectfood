@@ -157,6 +157,8 @@
         .then(response => response.json())
         .then(data => {
             if (data.status) {
+
+                localStorage.clear();
                 Swal.fire({
                     icon: 'success',
                     title: 'สำเร็จ',

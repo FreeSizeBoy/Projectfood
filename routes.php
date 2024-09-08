@@ -52,6 +52,7 @@ get('/api/shops/$id', 'apis/shops/get-single.php');
 post('/api/shops/create', 'apis/shops/create.php');
 post('/api/shops/$id/edit', 'apis/shops/update.php');
 post('/api/shops/$id/delete', 'apis/shops/delete.php');
+post('/api/shops/$id/turn', 'apis/shops/open-close.php');
 
 get('/api/menus', 'apis/foods/get-all.php');
 get('/api/menus/$id', 'apis/foods/get-single.php');

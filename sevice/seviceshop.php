@@ -58,7 +58,8 @@ function getShops($conn, $page = 1, $limit = 10, $search = '' , $filter = '')
                 'image_url' => $row['image_url'],
                 'username' => $row['username'],
                 'qrcode' => $row['qrcode'],
-                'menus' => []
+                'menus' => [],
+                'status' => $row['status'],
             ];
         }
 
@@ -79,6 +80,46 @@ function getShops($conn, $page = 1, $limit = 10, $search = '' , $filter = '')
     return array_values($shops);
 }
 
+function toggleShopStatus($conn, $id) {
+    // ดึงข้อมูลร้านค้าที่ระบุ
+    $sql = "SELECT status FROM shops WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        return [
+            'status' => false,
+            'message' => 'ไม่พบข้อมูลร้าน'
+        ];
+    }
+    
+    $shop = $result->fetch_assoc();
+    $currentStatus = $shop['status'];
+    
+    // เปลี่ยนสถานะเป็นตรงกันข้าม
+    $newStatus = ($currentStatus === 'เปิด') ? 'ปิด' : 'เปิด';
+    
+    // อัปเดตสถานะใหม่ในฐานข้อมูล
+    $sql = "UPDATE shops SET status = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $newStatus, $id);
+    
+    if ($stmt->execute()) {
+        return [
+            'status' => true,
+            'message' => 'สถานะร้านค้าเปลี่ยนเป็น ' . $newStatus
+        ];
+    } else {
+        return [
+            'status' => false,
+            'message' => 'เกิดข้อผิดพลาดในการอัปเดตสถานะ'
+        ];
+    }
+}
+
+
 
 function deleteShop($conn, $id, $imageUrl)
 {
@@ -92,7 +133,7 @@ function deleteShop($conn, $id, $imageUrl)
 
 function createShop($conn, $owner_id, $shopname, $image_url, $qrcode)
 {
-    $sql = "INSERT INTO shops (owner_id, shopname, image_url , qrcode) VALUES ('$owner_id', '$shopname', '$image_url', '$qrcode')";
+    $sql = "INSERT INTO shops (owner_id, shopname, image_url , qrcode , status) VALUES ('$owner_id', '$shopname', '$image_url', '$qrcode', 'ปิด')";
 
     if ($conn->query($sql) === TRUE) {
         return getShopById($conn, $conn->insert_id);

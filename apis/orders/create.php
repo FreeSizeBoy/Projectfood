@@ -26,10 +26,10 @@ if ($slip && $slip !== 'เงินสด') {
 // สร้างคำสั่งซื้อใหม่
 $orders = createOrdersV2($conn, $user_id, $shop_id, $menu_id, $slip);
 
-if ($orders === null) {
+if ($orders['status'] === false) {
     echo json_encode([
         'status' => false,
-        'message' => 'เกิดข้อผิดพลาด'
+        'message' => $orders['message']
     ]);
     return;
 }

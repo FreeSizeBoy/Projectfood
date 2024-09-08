@@ -10,6 +10,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        .menu-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .out-of-stock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            font-size: 20px;
+            padding: 10px 20px;
+            z-index: 10;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .closed {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 20px;
+            padding: 10px 20px;
+            z-index: 10;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,21 +58,6 @@
     </div>
 
     <div id="menu-s"></div>
-
-    <!-- Sample menu items. Uncomment and replace with dynamic content if necessary -->
-    <!-- 
-    <div class="menu-items">
-        <h2>ร้านข้าวแกง ร้านที่ 1</h2>
-    </div>
-    <div class="menu-itemss">
-        <div class="menu-item">
-            <img src="img/food1.png" alt="">
-            <h4>ผัดกะเพรา 20 บาท</h4>
-            <button type="button" class="btn btn-primary" data-shopid="1" data-id="1" data-action="order">สั่งซื้อ</button>
-        </div>
-        ...
-    </div> 
-    -->
 
     <footer class="main-footer-1">
         <div class="main-footer">
@@ -59,66 +78,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <script>
-        //โค้ดนี้ใช้สำหรับเพิ่มไอเทม (item) ลงในรถเข็น (cart)
-        function addToCart(shopId, foodId) {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
-            
-            cart = cart.filter(item => item.shopId == shopId);
-
-            var found = false;
-            cart = cart.map(function(item) {
-                if (item.id == foodId) {
-                    item.quantity += 1;
-                    found = true;
-                }
-                return item;
-            });
-
-            if (!found) {
-                cart.push({
-                    shopId: shopId,
-                    id: foodId,
-                    quantity: 1
-                });
-            }
-            //บันทึกข้อมูล
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        // Remove item from cart
-        function removeFromCart(shopId, foodId) {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cart = cart.filter(item => item.shopId == shopId || (item.id != foodId));
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-        }
-
-        // Update cart count in the header
-        function updateCartCount() {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
-            var count = cart.reduce((acc, item) => acc + item.quantity, 0);
-            $('#cart-count').text(count);
-        }
-
-        // Handle order button clicks
-        $(document).on('click', 'button[data-action="order"]', function() {
-            var shopId = $(this).data('shopid');
-            var foodId = $(this).data('id');
-            addToCart(shopId, foodId);
-            console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
-        });
-
-        // Handle ordercart button clicks
-        $(document).on('click', 'button[data-action="ordercart"]', function() { 
-            var shopId = $(this).data('shopid');
-            var foodId = $(this).data('id');
-            addToCart(shopId, foodId);
-            console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
-        });
-
-        // Load menu data
-        $(document).ready(() => {
+        function fetchMenuData() {
             $.ajax({
                 url: '<?= ROOT_URL ?>/api/shops',
                 type: 'GET',
@@ -128,9 +88,15 @@
                     if (response.status) {
                         const menus = response.data;
                         const menu_s = $('#menu-s');
+                        menu_s.empty(); // ล้างข้อมูลเดิม
                         menus.forEach(menu => {
+                            let closedLabel = '';
+                            if (menu.status === 'ปิด') {
+                                closedLabel = `<div class="closed">ร้านปิด</div>`;
+                            }
+
                             menu_s.append(`
-                                <div class="menu-items">
+                                <div id="shop-${menu.id}" class="menu-items" data-status="${menu.status}">
                                     <h2>${menu.shopname}</h2>
                                 </div>
                                 <div class="menu-itemss"></div>
@@ -138,12 +104,19 @@
                             const menu_itemss = $(`<div class="menu-itemss"></div>`);
                             menu_s.append(menu_itemss);
                             menu.menus.forEach(menu_item => {
+                                let stockLabel = '';
+                                if (menu_item.stock <= 0) {
+                                    stockLabel = `<div class="out-of-stock">สินค้าหมด</div>`;
+                                }
+
                                 menu_itemss.append(`
-                                    <div class="menu-item">
+                                    <div class="menu-item position-relative">
                                         <img src="<?= FOOD_UPLOAD_DIR ?>${menu_item.image_url}" alt="">
+                                        ${stockLabel}
+                                        ${closedLabel}
                                         <h4>${menu_item.menuname} ${menu_item.price} บาท</h4>
-                                        <button class="btn btn-primary" type="button" data-shopid='${menu.id}' data-action='order' data-id="${menu_item.id}">สั่งซื้อ</button>
-                                        <button class="btn btn-secondary" type="button" data-shopid='${menu.id}' data-action='ordercart' data-id="${menu_item.id}">+</button>
+                                        <button class="btn btn-primary" type="button" data-shopid='${menu.id}' data-action='order' data-id="${menu_item.id}" ${menu_item.stock <= 0 || menu.status === 'ปิด' ? 'disabled' : ''}>สั่งซื้อ</button>
+                                        <button class="btn btn-secondary" type="button" data-shopid='${menu.id}' data-action='ordercart' data-id="${menu_item.id}" ${menu_item.stock <= 0 || menu.status === 'ปิด' ? 'disabled' : ''}>+</button>
                                     </div>
                                 `);
                             });
@@ -164,33 +137,69 @@
                     });
                 }
             });
-        });
-
-        // Function to check if user is logged in
-        function isLoggedIn() {
-            // You can modify this based on how you check login status in your application
-            // For example, you might check for a session or a specific cookie
-            return '<?= $_SESSION['id'] ?? null ?>' != "";
         }
 
-        // Handle order button clicks
-        $(document).on('click', 'button[data-action="order"],button[data-action="ordercart"]', function() {
-            if (!isLoggedIn()) {
+        function updateCartCount() {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            var count = cart.reduce((acc, item) => acc + item.quantity, 0);
+            $('#cart-count').text(count);
+        }
+
+        function addToCart(shopId, foodId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            var shopStatus = $(`#shop-${shopId}`).data('status'); // ใช้ data attribute เพื่อตรวจสอบสถานะของร้านค้า
+
+            if (shopStatus === 'closed') {
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'กรุณาเข้าสู่ระบบ',
-                    text: 'คุณต้องเข้าสู่ระบบหรือสมัครสมาชิกก่อนทำการสั่งซื้อ',
-                    showCancelButton: true,
-                    confirmButtonText: 'เข้าสู่ระบบ',
-                    cancelButtonText: 'สมัครสมาชิก'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = 'login'; // Redirect to login page
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        window.location.href = 'register'; // Redirect to register page
-                    }
+                    icon: 'error',
+                    title: 'ร้านปิด',
+                    text: 'ไม่สามารถเพิ่มสินค้าเมื่อร้านปิด'
+                });
+                return;
+            }
+
+            var item = cart.find(item => item.shopId === shopId && item.id === foodId);
+
+            if (item) {
+                item.quantity += 1;
+            } else {
+                cart.push({
+                    shopId: shopId,
+                    id: foodId,
+                    quantity: 1
                 });
             }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function removeFromCart(shopId, foodId) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => !(item.shopId === shopId && item.id === foodId));
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        $(document).on('click', 'button[data-action="order"]', function() {
+            var shopId = $(this).data('shopid');
+            var foodId = $(this).data('id');
+            addToCart(shopId, foodId);
+            console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
+            location.href = '<?= ROOT_URL ?>/cart';
+        });
+
+        $(document).on('click', 'button[data-action="ordercart"]', function() { 
+            var shopId = $(this).data('shopid');
+            var foodId = $(this).data('id');
+            addToCart(shopId, foodId);
+            console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
+        });
+
+        $(document).ready(() => {
+            fetchMenuData(); // โหลดข้อมูลเมนูเมื่อเริ่มต้น
+
+            // รีเฟรชข้อมูลเมนูทุก 5 วินาที
+            setInterval(fetchMenuData, 5000); 
         });
     </script>
 </body>

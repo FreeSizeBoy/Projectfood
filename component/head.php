@@ -1,6 +1,6 @@
 <?php
 $id = $_SESSION['id'] ?? null;
-$img_url = $_SESSION['img_url'] ?? null;
+$img_url = $_SESSION['img_url'] ?? Profile_defulte;
 $username = $_SESSION['username'] ?? null;
 ?>
 

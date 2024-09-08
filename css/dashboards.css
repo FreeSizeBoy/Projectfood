@@ -1,0 +1,60 @@
+/* เริ่มต้นด้วยการตั้งค่าพื้นฐานสำหรับ toggle switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* ความกว้างของ toggle switch */
+    height: 34px; /* ความสูงของ toggle switch */
+}
+
+/* ซ่อน input */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* สไตล์สำหรับ slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* สีพื้นหลังของ slider */
+    transition: .4s; /* การเปลี่ยนแปลงที่นุ่มนวล */
+    border-radius: 34px; /* มุมของ slider */
+}
+
+/* สไตล์สำหรับ slider ก่อนที่มันจะเคลื่อนที่ */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px; /* ความสูงของวงกลมใน slider */
+    width: 26px; /* ความกว้างของวงกลมใน slider */
+    border-radius: 50%; /* วงกลม */
+    left: 4px; /* ระยะห่างจากขอบซ้ายของ slider */
+    bottom: 4px; /* ระยะห่างจากขอบล่างของ slider */
+    background-color: white; /* สีพื้นหลังของวงกลม */
+    transition: .4s; /* การเปลี่ยนแปลงที่นุ่มนวล */
+}
+
+/* สไตล์เมื่อ input ถูกเลือก */
+input:checked + .slider {
+    background-color: #2196F3; /* สีพื้นหลังเมื่อ toggle switch เปิด */
+}
+
+/* สไตล์เมื่อวงกลมเคลื่อนที่ไปทางขวา */
+input:checked + .slider:before {
+    transform: translateX(26px); /* เคลื่อนที่ไปทางขวา */
+}
+
+/* รูปทรงของ slider เมื่อมีการใช้ class .round */
+.slider.round {
+    border-radius: 34px; /* มุมของ slider เมื่อใช้ .round */
+}
+
+/* รูปทรงของวงกลมใน slider เมื่อมีการใช้ class .round */
+.slider.round:before {
+    border-radius: 50%; /* วงกลมใน slider เมื่อใช้ .round */
+}
