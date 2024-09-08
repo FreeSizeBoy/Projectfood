@@ -146,32 +146,42 @@
         }
 
         function addToCart(shopId, foodId) {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
-            var shopStatus = $(`#shop-${shopId}`).data('status'); // ใช้ data attribute เพื่อตรวจสอบสถานะของร้านค้า
+    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+    var shopStatus = $(`#shop-${shopId}`).data('status'); // ใช้ data attribute เพื่อตรวจสอบสถานะของร้านค้า
 
-            if (shopStatus === 'closed') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ร้านปิด',
-                    text: 'ไม่สามารถเพิ่มสินค้าเมื่อร้านปิด'
-                });
-                return;
-            }
+    if (shopStatus === 'closed') {
+        Swal.fire({
+            icon: 'error',
+            title: 'ร้านปิด',
+            text: 'ไม่สามารถเพิ่มสินค้าเมื่อร้านปิด'
+        });
+        return;
+    }
 
-            var item = cart.find(item => item.shopId === shopId && item.id === foodId);
+    // ตรวจสอบว่ามีร้านค้าที่ไม่ใช่ร้านเดียวกับร้านที่เพิ่มใหม่หรือไม่
+    var currentShop = cart.length > 0 ? cart[0].shopId : null;
+    if (currentShop && currentShop !== shopId) {
+        // ลบสินค้าทั้งหมดจากร้านเดิม
+        cart = cart.filter(item => item.shopId === shopId);
+    }
 
-            if (item) {
-                item.quantity += 1;
-            } else {
-                cart.push({
-                    shopId: shopId,
-                    id: foodId,
-                    quantity: 1
-                });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-        }
+    // เพิ่มสินค้าจากร้านใหม่
+    var item = cart.find(item => item.shopId === shopId && item.id === foodId);
+
+    if (item) {
+        item.quantity += 1;
+    } else {
+        cart.push({
+            shopId: shopId,
+            id: foodId,
+            quantity: 1
+        });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+}
+
 
         function removeFromCart(shopId, foodId) {
             var cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -179,28 +189,50 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
         }
-
-        $(document).on('click', 'button[data-action="order"]', function() {
-            var shopId = $(this).data('shopid');
-            var foodId = $(this).data('id');
-            addToCart(shopId, foodId);
-            console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
-            location.href = '<?= ROOT_URL ?>/cart';
-        });
-
-        $(document).on('click', 'button[data-action="ordercart"]', function() { 
-            var shopId = $(this).data('shopid');
-            var foodId = $(this).data('id');
-            addToCart(shopId, foodId);
-            console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
-        });
-
         $(document).ready(() => {
             fetchMenuData(); // โหลดข้อมูลเมนูเมื่อเริ่มต้น
 
             // รีเฟรชข้อมูลเมนูทุก 5 วินาที
             setInterval(fetchMenuData, 5000); 
         });
+
+
+        $(document).on('click', 'button[data-action="order"], button[data-action="ordercart"]', function() {
+    if (isLoggedIn()) {
+        var shopId = $(this).data('shopid');
+        var foodId = $(this).data('id');
+        addToCart(shopId, foodId);
+        console.log("Added food with ID: " + foodId + " from shop with ID: " + shopId + " to cart.");
+        
+        // If the action is "order", redirect to cart page
+        if ($(this).data('action') === 'order') {
+            location.href = '<?= ROOT_URL ?>/cart';
+        }
+    } else {
+        Swal.fire({
+            icon: 'warning',
+            title: 'กรุณาเข้าสู่ระบบ',
+            text: 'คุณต้องเข้าสู่ระบบหรือสมัครสมาชิกก่อนทำการสั่งซื้อ',
+            showCancelButton: true,
+            confirmButtonText: 'เข้าสู่ระบบ',
+            cancelButtonText: 'สมัครสมาชิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'login'; // Redirect to login page
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                window.location.href = 'register'; // Redirect to register page
+            }
+        });
+    }
+});
+
+function isLoggedIn() {
+    // Check if session ID is not null or undefined
+    // console.log('<?= $_SESSION['id'] ?? null ?>' === "")
+    return '<?= $_SESSION['id'] ?? null ?>' !== "";
+}
+
+
     </script>
 </body>
 
