@@ -1,6 +1,11 @@
 <?php
 $id = $_SESSION['id'] ?? null;
 $img_url = $_SESSION['img_url'] ?? null;
+
+include_once "database.php";
+
+
+
 ?>
 
 
@@ -27,7 +32,8 @@ $img_url = $_SESSION['img_url'] ?? null;
 
     <div class="container-fluid containers">
         <div class="main">
-            <img src="img/welcome.png" alt="">
+            <img src="<?= getImageByTitle('welcome', $conn) ?>" alt="">
+            <!-- <img src="img/welcome.png" alt=""> -->
             <h2>ยินดีต้อนรับเข้าสู่ระบบสั่งอาหาร 🍴</h2>
             <button type="button"><a href="menu">เมนูอาหาร</a></button>
         </div>
@@ -35,7 +41,8 @@ $img_url = $_SESSION['img_url'] ?? null;
             <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="img/r1.png" class="d-block w-100" alt="">
+                        <img src="<?= getImageByTitle('res1', $conn) ?>" class="d-block w-100" alt="">
+                        <!-- <img src="img/r1.png" class="d-block w-100" alt=""> -->
                     </div>
                     <div class="carousel-item">
                         <img src="img/r2.png" class="d-block w-100" alt="">

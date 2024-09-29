@@ -45,7 +45,7 @@ $sql = "CREATE TABLE IF NOT EXISTS shops(
         qrcode VARCHAR(255) NOT NULL,
         category VARCHAR(255) NOT NULL,
         status VARCHAR(255) NOT NULL
-        )"; 
+        )";
 
 if (!$conn->query($sql)) {
     die("เชื่อมต่อไม่ได้");
@@ -102,5 +102,16 @@ $sql = "CREATE TABLE IF NOT EXISTS Expenses(
     )";
 
 if (!$conn->query($sql)) {
-die("เชื่อมต่อไม่ได้");
+    die("เชื่อมต่อไม่ได้");
+}
+
+$sql = "CREATE TABLE IF NOT EXISTS site_images(
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY ,
+    title VARCHAR(255) NOT NULL,
+    image_url VARCHAR(255),
+    default_url VARCHAR(255) NOT NULL
+    )";
+
+if (!$conn->query($sql)) {
+    die("เชื่อมต่อไม่ได้");
 }

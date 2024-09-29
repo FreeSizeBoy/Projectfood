@@ -8,6 +8,24 @@
 // If you are using this in a subdirectory
 require_once("router.php");
 
+function getImageByTitle($title, $conn) {
+    // สร้างคำสั่ง SQL เพื่อดึงข้อมูลจากฐานข้อมูล
+    $sql = "SELECT * FROM site_images WHERE title = ?";
+
+    // เตรียมการ query ข้อมูลด้วยการใช้ prepared statement เพื่อป้องกัน SQL injection
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $title);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // ตรวจสอบว่าพบข้อมูลหรือไม่
+    if ($result->num_rows > 0) {
+        // ดึงแถวข้อมูลที่ตรงกับ title
+        $row = $result->fetch_assoc();
+        return $row['image_url'] ?? $row['default_url'];
+    }
+}
+
 // Disable error reporting
 // error_reporting(0);
 // ini_set('display_errors', 0);
@@ -31,6 +49,8 @@ get('/order_history', 'pages/order_history.php');
 get('/cart', 'pages/cart.php');
 get('/payment', 'pages/payment.php');
 get('/expenses', 'pages/expenses.php');
+get('/img', 'pages/img.php');
+post('/img', 'pages/img.php');
 
 // get('/app/css/nav-bar', 'css/nav-bar.css');
 // get('/app/css/side-bar', 'css/side-bar.css');

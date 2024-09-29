@@ -2,13 +2,19 @@
 $id = $_SESSION['id'] ?? null;
 $img_url = $_SESSION['img_url'] ?? Profile_defulte;
 $username = $_SESSION['username'] ?? null;
+
+include_once "database.php";
+
+
+
 ?>
 
 <div class="header">
     <div class="d-flex">
         <div class="menu">
             <div class="img-logo">
-                <img src="img/logo (3).png" alt="">
+                <img src="<?= getImageByTitle('logo', $conn) ?>" alt="">
+                <!-- <img src="img/logo (3).png" alt=""> -->
             </div>
             <div><a href="<?= ROOT_URL ?>">หน้าหลัก</a></div>
             <div><a href="menu">เมนู</a></div>

@@ -69,7 +69,7 @@ if (isset($_SESSION['id'])) {
                 </button>
             </form>
         </div>
-        <img class="login-logo" src="img/loginfor.png" alt="Logo">
+        <img class="login-logo" src="<?= getImageByTitle('welcome', $conn) ?>" alt="Logo">
         <div class="details-two">
             <h1 class="back">ยินดีต้อนรับ</h1>
             <p class="log">เข้าสู่ระบบเพื่อทำการสั่งอาหาร</p>
