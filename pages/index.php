@@ -45,13 +45,16 @@ include_once "database.php";
                         <!-- <img src="img/r1.png" class="d-block w-100" alt=""> -->
                     </div>
                     <div class="carousel-item">
-                        <img src="img/r2.png" class="d-block w-100" alt="">
+                        <img src="<?= getImageByTitle('res2', $conn) ?>" class="d-block w-100" alt="">
+                        <!-- <img src="img/r2.png" class="d-block w-100" alt=""> -->
                     </div>
                     <div class="carousel-item">
-                        <img src="img/r3.png" class="d-block w-100" alt="">
+                        <img src="<?= getImageByTitle('res3', $conn) ?>" class="d-block w-100" alt="">
+                        <!-- <img src="img/r3.png" class="d-block w-100" alt=""> -->
                     </div>
                     <div class="carousel-item">
-                        <img src="img/r4.png" class="d-block w-100" alt="">
+                        <img src="<?= getImageByTitle('res4', $conn) ?>" class="d-block w-100" alt="">
+                        <!-- <img src="img/r4.png" class="d-block w-100" alt=""> -->
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -68,8 +71,10 @@ include_once "database.php";
     <!-- containner -->
     <div class="centar">
         <div class="main-img-cen">
-            <img src="img/rain.jpg" alt="">
-            <img src="img/restaurant4.png" alt="">
+            <img src="<?= getImageByTitle('t1', $conn) ?>" alt="">
+            <!-- <img src="img/rain.jpg" alt=""> -->
+            <img src="<?= getImageByTitle('t2', $conn) ?>" alt="">
+            <!-- <img src="img/restaurant4.png" alt=""> -->
         </div>
 
         <div class="main-cen">
@@ -83,12 +88,18 @@ include_once "database.php";
             <h2>Happenings Foods</h2>
         </div>
         <div class="main-downs">
-            <img src="img/food1.png" alt="">
-            <img src="img/food2.png" alt="">
-            <img src="img/egg1.png" alt="">
-            <img src="img/nool1.png" alt="">
-            <img src="img/nool2.png" alt="">
-            <img src="img/nool3.png" alt="">
+            <img src="<?= getImageByTitle('f1', $conn) ?>" alt="">
+            <!-- <img src="img/food1.png" alt=""> -->
+            <img src="<?= getImageByTitle('f2', $conn) ?>" alt="">
+            <!-- <img src="img/food2.png" alt=""> -->
+            <img src="<?= getImageByTitle('f3', $conn) ?>" alt="">
+            <!-- <img src="img/egg1.png" alt=""> -->
+            <img src="<?= getImageByTitle('f4', $conn) ?>" alt="">
+            <!-- <img src="img/nool1.png" alt=""> -->
+            <img src="<?= getImageByTitle('f5', $conn) ?>" alt="">
+            <!-- <img src="img/nool2.png" alt=""> -->
+            <img src="<?= getImageByTitle('f6', $conn) ?>" alt="">
+            <!-- <img src="img/nool3.png" alt=""> -->
         </div>
     </div>
     <!-- Footer -->

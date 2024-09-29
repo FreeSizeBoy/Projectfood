@@ -130,7 +130,7 @@
         const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         console.log(cart)
-        if(cart.lenght == 0){
+        if(cart.lenght === 0){
             Swal.fire({
                     icon: 'warning',
                     title: 'คำเตือน',

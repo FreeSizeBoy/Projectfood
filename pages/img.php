@@ -13,8 +13,13 @@
 </head>
 
 <body>
+<?php include_once "component/dashborad.php"; ?>
     <?php
     include_once "database.php";
+    
+    
+
+
 
     // ฟังก์ชันอัปโหลดไฟล์ภาพ
     function uploadImage($file)
@@ -81,7 +86,7 @@ if (isset($_POST['clear_image'])) {
     // ดึงข้อมูลภาพทั้งหมดจากฐานข้อมูล
     $result = $conn->query("SELECT * FROM site_images");
     ?>
-    <?php include_once "component/dashborad.php"; ?>
+    
 
 
     <div class="main-content">
