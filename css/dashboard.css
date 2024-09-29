@@ -1154,3 +1154,28 @@ button[type="submit"]:hover {
     text-align: center; /* จัดแนวข้อความให้อยู่กลางการ์ด */
     background-color: #ff4081; /* พื้นหลังของการ์ด */
 }
+
+/* CSS ที่คุณจะต้องเพิ่มในไฟล์ dashboard.css ของคุณ */
+
+/* CSS สำหรับเปลี่ยนสีของสถานะต่าง ๆ */
+.status-pending {
+    color: #ff9800; /* สีส้มสำหรับ 'pending' */
+    font-weight: bold;
+}
+
+.status-complete {
+    color: #4caf50; /* สีเขียวสำหรับ 'complete' */
+    font-weight: bold;
+}
+
+.status-cancel {
+    color: #f44336; /* สีแดงสำหรับ 'cancel' */
+    font-weight: bold;
+}
+
+.status-confirm {
+    color: #2196f3; /* สีน้ำเงินสำหรับ 'confirm' */
+    font-weight: bold;
+}
+
+

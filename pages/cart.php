@@ -42,13 +42,13 @@
             cartItems.innerHTML = ''; // Clear old items
             let total = 0;
 
-            cart.sort((a, b) => a.id - b.id);
+            cart.sort((a, b) => b.id - a.id);
 
             for (const item of cart) {
                 try {
                     const response = await fetch(`${API_URL}${item.id}`);
                     const data = await response.json();
-
+//แสดงผลสินค้า + คำนวณราคา 
                     if (data.status) {
                         const menuItem = data.data;
                         const price = parseFloat(menuItem.price); // แปลงราคาเป็นตัวเลข
@@ -87,7 +87,7 @@
             cartTotal.textContent = `฿${total}`;
         }
 
-        function addToCart(shopId, foodId) {
+        function plusToCart(shopId, foodId) {
             var cart = JSON.parse(localStorage.getItem('cart')) || [];
 
             // Remove old cart items from the same shop
@@ -133,15 +133,15 @@
             updateCart();
         }
 
-        function removeFromCart(shopId, foodId) {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+        // function removeFromCart(shopId, foodId) {
+        //     var cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-            // Remove old cart items from the same shop
-            cart = cart.filter(item => item.shopId == shopId || (item.id != foodId));
+        //     // Remove old cart items from the same shop
+        //     cart = cart.filter(item => item.shopId == shopId || (item.id != foodId));
 
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCart();
-        }
+        //     localStorage.setItem('cart', JSON.stringify(cart));
+        //     updateCart();
+        // }
 
         function clearCart() {
             localStorage.removeItem('cart');
@@ -153,7 +153,7 @@
             if (event.target.classList.contains('increase')) {
                 var shopId = event.target.getAttribute('data-shopid');
                 var foodId = event.target.getAttribute('data-foodid');
-                addToCart(shopId, foodId);
+                plusToCart(shopId, foodId);
             } else if (event.target.classList.contains('decrease')) {
                 var shopId = event.target.getAttribute('data-shopid');
                 var foodId = event.target.getAttribute('data-foodid');

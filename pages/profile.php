@@ -123,17 +123,17 @@ $user = $_SESSION['id'];
             });
         });
 
-        function previewImage() {
-            const file = document.getElementById('uploadImage').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profileImage').src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
     });
+    function previewImage() {
+        const file = document.getElementById('uploadImage').files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImage').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 </script>
 </body>
 </html>

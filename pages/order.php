@@ -141,31 +141,53 @@
                 tbody.empty(); // Clear existing rows
 
                 orders.forEach(order => {
-                    // Construct the menu details HTML
-                    let menuDetails = '';
-                    if (order.details && order.details.length > 0) {
-                        menuDetails = order.details.map(detail => `
-                            <div>
-                                <img src="<?= FOOD_UPLOAD_DIR ?>${detail.menu_image}" alt="${detail.menu_name}" style="width: 50px; height: auto;">
-                                <p>${detail.menu_name} - ${detail.amount} x ${detail.price}</p>
-                            </div>
-                        `).join('');
-                    }
-                    
-                    tbody.append(`
-                        <tr>
-                            <td>${order.id}</td>
-                            <td>${order.username}</td>
-                            <td>${order.nickname}</td>
-                            <td>${order.email}</td>
-                            <td>${order.status}</td>
-                            <td>${order.total_price}</td>
-                            <td><img src="<?= SLIP_UPLOAD_DIR ?>${order.slip}" alt="${order.slip}" style="width: 50px; height: auto;"></td>
-                            <td>${menuDetails}</td> <!-- แสดงรายการอาหาร -->
-                            <td><button data-id="${order.id}" data-action="Delete" class="delete-button">🗑️</button></td>
-                        </tr>
-                    `);
-                });
+    // Construct the menu details HTML
+    let menuDetails = '';
+    if (order.details && order.details.length > 0) {
+        menuDetails = order.details.map(detail => `
+            <div>
+                <img src="<?= FOOD_UPLOAD_DIR ?>${detail.menu_image}" alt="${detail.menu_name}" style="width: 50px; height: auto;">
+                <p>${detail.menu_name} - ${detail.amount} x ${detail.price}</p>
+            </div>
+        `).join('');
+    }
+
+    // Determine the status class
+    let statusClass;
+    switch(order.status) {
+        case 'pending':
+            statusClass = 'status-pending';
+            break;
+        case 'complete':
+            statusClass = 'status-complete';
+            break;
+        case 'cancel':
+            statusClass = 'status-cancel';
+            break;
+        case 'confirm':
+            statusClass = 'status-confirm';
+            break;
+        default:
+            statusClass = '';
+            break;
+    }
+
+    tbody.append(`
+        <tr>
+            <td>${order.id}</td>
+            <td>${order.username}</td>
+            <td>${order.nickname}</td>
+            <td>${order.email}</td>
+            <td class="${statusClass}">${order.status}</td>
+            <td>${order.total_price}</td>
+            <td><img src="<?= SLIP_UPLOAD_DIR ?>${order.slip}" alt="${order.slip}" style="width: 50px; height: auto;"></td>
+            <td>${menuDetails}</td>
+            <td><button data-id="${order.id}" data-action="Delete" class="delete-button">🗑️</button></td>
+        </tr>
+    `);
+});
+
+
 
                 // Event listeners for edit and delete buttons
                 table.on('click', 'button', (e) => {
@@ -252,65 +274,65 @@
     });
 
     // Handle form submission for editing
-    $('#editOrderForm').on('submit', function(e) {
-        e.preventDefault();
-        $.ajax({
-            url: `<?= ROOT_URL ?>/api/orders/${$('#editOrderId').val()}/edit`,
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: new FormData(this),
-            success: function(response) {
-                response = JSON.parse(response);
-                if (response.status) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.massage,
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: response.massage
-                    });
-                }
-            }
-        });
-    });
+    // $('#editOrderForm').on('submit', function(e) {
+    //     e.preventDefault();
+    //     $.ajax({
+    //         url: `<?= ROOT_URL ?>/api/orders/${$('#editOrderId').val()}/edit`,
+    //         type: 'POST',
+    //         processData: false,
+    //         contentType: false,
+    //         data: new FormData(this),
+    //         success: function(response) {
+    //             response = JSON.parse(response);
+    //             if (response.status) {
+    //                 Swal.fire({
+    //                     icon: 'success',
+    //                     title: response.massage,
+    //                     showConfirmButton: false,
+    //                     timer: 1500
+    //                 }).then(() => {
+    //                     location.reload();
+    //                 });
+    //             } else {
+    //                 Swal.fire({
+    //                     icon: 'error',
+    //                     title: response.massage
+    //                 });
+    //             }
+    //         }
+    //     });
+    // });
 
     // Handle form submission for adding
-    $('#addOrderForm').on('submit', function(e) {
-        e.preventDefault();
-        $.ajax({
-            url: `<?= ROOT_URL ?>/api/orders/create/`,
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            data: new FormData(this),
-            success: function(response) {
-                console.log(response);
-                response = JSON.parse(response);
-                if (response.status) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: response.massage,
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: response.massage
-                    });
-                }
-            }
-        });
-    });
+    // $('#addOrderForm').on('submit', function(e) {
+    //     e.preventDefault();
+    //     $.ajax({
+    //         url: `<?= ROOT_URL ?>/api/orders/create/`,
+    //         type: 'POST',
+    //         processData: false,
+    //         contentType: false,
+    //         data: new FormData(this),
+    //         success: function(response) {
+    //             console.log(response);
+    //             response = JSON.parse(response);
+    //             if (response.status) {
+    //                 Swal.fire({
+    //                     icon: 'success',
+    //                     title: response.massage,
+    //                     showConfirmButton: false,
+    //                     timer: 1500
+    //                 }).then(() => {
+    //                     location.reload();
+    //                 });
+    //             } else {
+    //                 Swal.fire({
+    //                     icon: 'error',
+    //                     title: response.massage
+    //                 });
+    //             }
+    //         }
+    //     });
+    // });
 
     // Close modals
     $('.modal .close').on('click', function() {
@@ -321,6 +343,8 @@
         $('#addOrderModal').show();
     }
 });
+
+
 
 
     </script>

@@ -1,106 +1,156 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Charmonman:wght@400;700&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Pridi:wght@200;300;400;500;600;700&display=swap');
-
 body {
-    font-family: 'Pridi', sans-serif;
+    font-family: 'Prompt', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
     margin: 0;
-    padding: 0;
-    background-color: #e0f7fa; /* Light blue background for a fresh look */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .container {
-    width: 80%;
-    max-width: 1200px; /* Limit the maximum width */
-    margin: 40px auto; /* Center container with some top and bottom margin */
+    background-color: #fff;
     padding: 30px;
-    background-color: #ffffff;
-    border-radius: 12px; /* Rounded corners for a modern look */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 1000px;
 }
 
 h1 {
     text-align: center;
-    color: #00796b; /* Teal color for the heading */
-    font-size: 2.5em; /* Larger font size for emphasis */
+    color: #007bff;
     margin-bottom: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    border-radius: 8px; /* Rounded corners for the table */
-    overflow: hidden; /* Ensure table corners are rounded */
+    margin-bottom: 20px;
 }
 
 table th, table td {
     border: 1px solid #ddd;
-    padding: 12px; /* Increase padding for better readability */
-    text-align: left;
-    color: #555; /* Darker text color for better contrast */
+    padding: 12px;
+    text-align: center;
 }
 
 table th {
-    background-color: #00796b; /* Matching table header color */
-    color: #ffffff;
-    font-size: 1.1em;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
 }
 
-table tr:nth-child(even) {
-    background-color: #e0f2f1; /* Slightly different color for alternating rows */
+table td {
+    background-color: #f9f9f9;
 }
 
 button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin-top: 20px;
-    background-color: #00796b; /* Matching button color */
+    background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 8px; /* Rounded corners for the button */
-    font-size: 18px; /* Larger font size for emphasis */
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition for background color and scale */
+    transition: background-color 0.3s;
+    display: inline-block;
 }
 
 button:hover {
-    background-color: #004d40; /* Darker shade on hover */
-    transform: scale(1.02); /* Slight scale effect on hover */
+    background-color: #0056b3;
+}
+
+#back-button {
+    display: block;
+    margin: 0 auto;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+/* สีตามสถานะ */
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    font-weight: bold;
+}
+
+.status-confirm {
+    background-color: #d4edda;
+    color: #155724;
+    font-weight: bold;
+}
+
+.status-complete {
+    background-color: #48c019;
+    color: #004085;
+    font-weight: bold;
+}
+
+.status-cancel {
+    background-color: #f8d7da;
+    color: #721c24;
+    font-weight: bold;
+}
+
+/* ปรับแต่งรูปภาพเมนูใน modal */
+.modal-content img {
+    border-radius: 10px;
+    margin-right: 10px;
+    display: block;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
 
 @media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
+    .container {
+        padding: 20px;
     }
 
-    thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    tr {
-        border: 1px solid #ccc;
-        margin-bottom: 10px;
-        background-color: #ffffff;
-    }
-
-    td {
-        border: none;
-        border-bottom: 1px solid #eee;
-        position: relative;
-        padding-left: 50%;
-        white-space: nowrap;
-        text-align: right;
-    }
-
-    td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0;
-        width: 45%;
-        padding-left: 10px;
-        font-weight: bold;
-        color: #00796b; /* Consistent text color */
+    .modal-content {
+        width: 90%;
     }
 }

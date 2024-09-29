@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - คำสั่งซื้อ</title>
-    <link rel="stylesheet" href="css/dashboard_m.css">
+    <link rel="stylesheet" href="css/dashboard_mob.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -108,70 +108,88 @@
             }
 
             function updateTable(orders) {
-                const tableBody = $('#ordersTable tbody');
-                tableBody.empty(); // ล้างข้อมูลเก่า
+    const tableBody = $('#ordersTable tbody');
+    tableBody.empty(); // ล้างข้อมูลเก่า
 
-                orders.forEach(order => {
-                    if (order.status !== 'cancel' && order.status !== 'complete') {
-                        const menuItems = order.details.map(item => {
-                            const extraText = item.extra ? ` (เพิ่มเติม: ${item.extra})` : '';
-                            const noteText = item.note ? ` (หมายเหตุ: ${item.note})` : '';
-                            const formattedItem = `${item.menu_name} (${item.amount} x ฿${item.price})${extraText}${noteText}`;
-                            return formattedItem;
-                        }).join('<br>');
+    orders.forEach(order => {
+        if (order.status !== 'cancel' && order.status !== 'complete') {
+            const menuItems = order.details.map(item => {
+                const extraText = item.extra ? ` (เพิ่มเติม: ${item.extra})` : '';
+                const noteText = item.note ? ` (หมายเหตุ: ${item.note})` : '';
+                const formattedItem = `${item.menu_name} (${item.amount} x ฿${item.price})${extraText}${noteText}`;
+                return formattedItem;
+            }).join('<br>');
 
-                        const statusText = getStatusText(order.status);
+            const statusText = getStatusText(order.status);
 
-                        const row = `
-                            <tr>
-                                <td>${order.username}</td>
-                                <td>${order.room}</td>
-                                <td>${menuItems}</td>
-                                <td>฿${order.total_price}</td>
-                                <td>
-                                    <img src="<?= SLIP_UPLOAD_DIR ?>${order.slip}" alt="${order.slip}" 
-                                         style="width: 50px; height: auto; cursor: pointer;" 
-                                         class="slip-image" data-image="<?= SLIP_UPLOAD_DIR ?>${order.slip}">
-                                </td>
-                                <td>${statusText}</td>
-                                <td>
-                                    <button class="confirm-order-btn" data-id="${order.id}" data-status="confirm">รับออเดอร์</button>
-                                    <button class="complete-btn" data-id="${order.id}" data-status="complete">อาหารเสร็จแล้ว</button>
-                                    <button class="cancel-btn" data-id="${order.id}" data-status="cancel">ยกเลิก</button>
-                                </td>
-                            </tr>
-                        `;
-                        tableBody.append(row);
-                    }
-                });
-
-                // เพิ่ม event listeners สำหรับปุ่ม
-                $('.confirm-order-btn').on('click', function() {
-                    const id = $(this).data('id');
-                    const status = $(this).data('status');
-                    updateOrderStatus(id, status);
-                });
-
-                $('.complete-btn').on('click', function() {
-                    const id = $(this).data('id');
-                    const status = $(this).data('status');
-                    updateOrderStatus(id, status);
-                });
-
-                $('.cancel-btn').on('click', function() {
-                    const id = $(this).data('id');
-                    const status = $(this).data('status');
-                    if (confirm('คุณแน่ใจหรือไม่? การยกเลิกจะไม่สามารถกู้คืนได้!')) {
-                        updateOrderStatus(id, status);
-                    }
-                });
-
-                // เพิ่ม event listener สำหรับรูปภาพสลิป
-                $('.slip-image').on('click', function() {
-                    const imageUrl = $(this).data('image');
-                    showLargeImage(imageUrl);
-                });
+            // กำหนดคลาสตามสถานะ
+            let statusClass = '';
+            switch (order.status) {
+                case 'pending':
+                    statusClass = 'status-pending';
+                    break;
+                case 'confirm':
+                    statusClass = 'status-confirm';
+                    break;
+                case 'complete':
+                    statusClass = 'status-complete';
+                    break;
+                case 'cancel':
+                    statusClass = 'status-cancel';
+                    break;
             }
+
+            const row = `
+                <tr class="${statusClass}">
+                    <td>${order.username}</td>
+                    <td>${order.room}</td>
+                    <td>${menuItems}</td>
+                    <td>฿${order.total_price}</td>
+                    <td>
+                        <img src="<?= SLIP_UPLOAD_DIR ?>${order.slip}" alt="${order.slip}" 
+                             style="width: 50px; height: auto; cursor: pointer;" 
+                             class="slip-image" data-image="<?= SLIP_UPLOAD_DIR ?>${order.slip}">
+                    </td>
+                    <td>${statusText}</td>
+                    <td>
+                        <button class="confirm-order-btn" data-id="${order.id}" data-status="confirm">รับออเดอร์</button>
+                        <button class="complete-btn" data-id="${order.id}" data-status="complete">อาหารเสร็จแล้ว</button>
+                        <button class="cancel-btn" data-id="${order.id}" data-status="cancel">ยกเลิก</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.append(row);
+        }
+    });
+
+    // เพิ่ม event listeners สำหรับปุ่ม
+    $('.confirm-order-btn').on('click', function() {
+        const id = $(this).data('id');
+        const status = $(this).data('status');
+        updateOrderStatus(id, status);
+    });
+
+    $('.complete-btn').on('click', function() {
+        const id = $(this).data('id');
+        const status = $(this).data('status');
+        updateOrderStatus(id, status);
+    });
+
+    $('.cancel-btn').on('click', function() {
+        const id = $(this).data('id');
+        const status = $(this).data('status');
+        if (confirm('คุณแน่ใจหรือไม่? การยกเลิกจะไม่สามารถกู้คืนได้!')) {
+            updateOrderStatus(id, status);
+        }
+    });
+
+    // เพิ่ม event listener สำหรับรูปภาพสลิป
+    $('.slip-image').on('click', function() {
+        const imageUrl = $(this).data('image');
+        showLargeImage(imageUrl);
+    });
+}
+
 
             function updateOrderStatus(id, status) {
                 $.ajax({

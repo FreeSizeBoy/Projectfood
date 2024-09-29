@@ -23,7 +23,7 @@ if ($shop === null) {
     return;
 }
 
-deleteShop($conn, $id, $shop['imageUrl']);
+deleteShop($conn, $id, $shop['image_url']);
 
 echo json_encode([
     'status' => true,

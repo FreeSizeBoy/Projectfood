@@ -21,7 +21,8 @@ $dailyExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id
 $monthlyExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ? AND MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE())";
 
 // ฟังก์ชันสำหรับประมวลผลคำสั่ง SQL และส่งค่า
-function getAmount($conn, $query, $shopId) {
+function getAmount($conn, $query, $shopId)
+{
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $shopId);
     $stmt->execute();
@@ -39,10 +40,17 @@ $totalExpenses = getAmount($conn, $totalExpensesQuery, $shopId);
 $dailyExpenses = getAmount($conn, $dailyExpensesQuery, $shopId);
 $monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
 
+// คำนวณยอดคงเหลือ
+$totalBalance = $totalSales - $totalExpenses;
+$dailyBalance = $dailySales - $dailyExpenses;
+$monthlyBalance = $monthlySales - $monthlyExpenses;
+
+
 ?>
 
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,6 +58,7 @@ $monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
     <link rel="stylesheet" href="css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <?php include_once "component/dashborad.php"; ?>
 
@@ -93,6 +102,25 @@ $monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
                 <p>฿<?php echo number_format($monthlyExpenses, 2); ?></p>
             </div>
         </section>
+
+        <section class="sales-summary">
+            <!-- ยอดคงเหลือรวม -->
+            <div class="summary-card">
+                <h3>ยอดคงเหลือรวม</h3>
+                <p>฿<?php echo number_format($totalBalance, 2); ?></p>
+            </div>
+            <!-- ยอดคงเหลือรายวัน -->
+            <div class="summary-card">
+                <h3>ยอดคงเหลือรายวัน</h3>
+                <p>฿<?php echo number_format($dailyBalance, 2); ?></p>
+            </div>
+            <!-- ยอดคงเหลือรายเดือน -->
+            <div class="summary-card">
+                <h3>ยอดคงเหลือรายเดือน</h3>
+                <p>฿<?php echo number_format($monthlyBalance, 2); ?></p>
+            </div>
+        </section>
+
         <section class="cards">
             <div class="card">
                 <h3>รายงานยอดขาย (ภาพรวม)</h3>
@@ -149,6 +177,14 @@ $monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
                 plugins: {
                     legend: {
                         position: 'top',
+                        onClick: (e, legendItem) => {
+                            const datasetIndex = legendItem.datasetIndex;
+                            const meta = salesChart.getDatasetMeta(datasetIndex);
+                            meta.hidden = meta.hidden === null ? !salesChart.data.datasets[datasetIndex].hidden : null;
+                            salesChart.update();
+
+                            filterTable(datasetIndex); // Filter the table based on the clicked label
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -160,6 +196,27 @@ $monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
                 }
             }
         });
+        // เพิ่มชุดข้อมูลสำหรับยอดคงเหลือ
+
+
+
+        function filterTable(datasetIndex) {
+            const reportData = document.getElementById('reportData');
+            const rows = reportData.getElementsByTagName('tr');
+
+            // datasetIndex 0 corresponds to "รายรับ", 1 corresponds to "รายจ่าย"
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const rowType = row.children[1].innerText; // "รายรับ" or "รายจ่าย"
+
+                if ((datasetIndex === 1 && rowType === 'รายจ่าย') ||
+                    (datasetIndex === 0 && rowType === 'รายรับ')) {
+                    row.style.display = 'none'; // Hide the row
+                } else {
+                    row.style.display = ''; // Show the row
+                }
+            }
+        }
 
         document.getElementById('monthBtn').addEventListener('click', function() {
             fetchData('month');
@@ -174,48 +231,70 @@ $monthlyExpenses = getAmount($conn, $monthlyExpensesQuery, $shopId);
         });
 
         function fetchData(period) {
-        const shopId = `<?= $_SESSION['shop_id'] ?>`; // Ensure correct shop_id is used
-        fetch(`<?= ROOT_URL ?>/api/revenue?year=2024&period=${period}&shop_id=${shopId}`)
-            .then(response => response.json())
-            .then(data => {
-                updateChart(data.labels, data.income, data.expenses);
-                updateTable(data.labels, data.income, data.expenses);
-            })
-            .catch(error => console.error('Error:', error));
-    }
+            const shopId = `<?= $_SESSION['shop_id'] ?>`; // Ensure correct shop_id is used
+            fetch(`<?= ROOT_URL ?>/api/revenue?year=2024&period=${period}&shop_id=${shopId}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(data.labels, data.income, data.expenses);
+                    updateTable(data.labels, data.income, data.expenses);
+                })
+                .catch(error => console.error('Error:', error));
+        }
 
-    function updateChart(labels, incomeData, expenseData) {
-        salesChart.data.labels = labels;
-        salesChart.data.datasets[0].data = incomeData;
-        salesChart.data.datasets[1].data = expenseData;
-        salesChart.update();
-    }
+        function updateChart(labels, incomeData, expenseData) {
+    salesChart.data.labels = labels;
+    salesChart.data.datasets[0].data = incomeData;
+    salesChart.data.datasets[1].data = expenseData;
 
-    function updateTable(labels, incomeData, expenseData) {
-        const reportData = document.getElementById('reportData');
-        reportData.innerHTML = '';
+    // ตรวจสอบว่าชุดข้อมูลยอดคงเหลือมีอยู่แล้วหรือไม่
+    const balanceDatasetIndex = salesChart.data.datasets.findIndex(dataset => dataset.label === 'ยอดคงเหลือ');
 
-        labels.forEach((label, index) => {
-            const income = incomeData[index] ? incomeData[index] : 0;
-            const expense = expenseData[index] ? expenseData[index] : 0;
-
-            const incomeRow = document.createElement('tr');
-            incomeRow.innerHTML = `
-                <td>${label}</td>
-                <td>รายรับ</td>
-                <td>฿${income.toLocaleString()}</td>
-            `;
-            reportData.appendChild(incomeRow);
-
-            const expenseRow = document.createElement('tr');
-            expenseRow.innerHTML = `
-                <td>${label}</td>
-                <td>รายจ่าย</td>
-                <td>฿${expense.toLocaleString()}</td>
-            `;
-            reportData.appendChild(expenseRow);
+    if (balanceDatasetIndex === -1) {
+        // หากยังไม่มีชุดข้อมูลยอดคงเหลือ ให้เพิ่มเข้าไป
+        salesChart.data.datasets.push({
+            label: 'ยอดคงเหลือ',
+            data: incomeData.map((income, index) => income - expenseData[index]), // หาผลต่างระหว่างรายรับและรายจ่าย
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
         });
+    } else {
+        // หากมีชุดข้อมูลยอดคงเหลือแล้ว ให้เพียงแค่ปรับปรุงข้อมูล
+        salesChart.data.datasets[balanceDatasetIndex].data = incomeData.map((income, index) => income - expenseData[index]);
     }
+
+    salesChart.update();
+}
+
+
+        function updateTable(labels, incomeData, expenseData) {
+            const reportData = document.getElementById('reportData');
+            reportData.innerHTML = '';
+
+            labels.forEach((label, index) => {
+                const income = incomeData[index] ? incomeData[index] : 0;
+                const expense = expenseData[index] ? expenseData[index] : 0;
+
+                // Create income row
+                const incomeRow = document.createElement('tr');
+                incomeRow.innerHTML = `
+            <td>${label}</td>
+            <td>รายรับ</td>
+            <td>฿${income.toLocaleString()}</td>
+        `;
+                reportData.appendChild(incomeRow);
+
+                // Create expense row
+                const expenseRow = document.createElement('tr');
+                expenseRow.innerHTML = `
+            <td>${label}</td>
+            <td>รายจ่าย</td>
+            <td>฿${expense.toLocaleString()}</td>
+        `;
+                reportData.appendChild(expenseRow);
+            });
+        }
     </script>
 </body>
+
 </html>

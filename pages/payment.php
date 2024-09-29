@@ -129,6 +129,15 @@
     document.getElementById('confirm-payment').addEventListener('click', function() {
         const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log(cart)
+        if(cart.lenght == 0){
+            Swal.fire({
+                    icon: 'warning',
+                    title: 'คำเตือน',
+                    text: 'ยังไม่ได้เลือกอาหาร',
+                });
+                return;
+        }
         const formData = new FormData();
         formData.append('user_id', <?= $_SESSION['id'] ?>); 
         formData.append('shop_id', cart[0]['shopId']); 
@@ -164,7 +173,7 @@
                     title: 'สำเร็จ',
                     text: 'การชำระเงินเสร็จสมบูรณ์',
                 }).then(() => {
-                    window.location.href = 'cart'; 
+                    window.location.href = 'menu'; 
                 });
             } else {
                 Swal.fire({

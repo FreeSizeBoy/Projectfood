@@ -1,0 +1,187 @@
+/* ตั้งค่าสีและฟอนต์พื้นฐาน */
+body {
+    font-family: 'Itim', sans-serif; /* ใช้ฟอนต์ 'Itim' ที่คุณใช้ */
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+    color: #007BFF;
+    font-size: 2.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ปุ่มย้อนกลับ */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 20px; /* เพิ่ม padding เพื่อให้ปุ่มดูชัดขึ้น */
+    color: white; /* เปลี่ยนสีข้อความ */
+    background-color: #007BFF; /* สีพื้นหลังฟ้า */
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold; /* ทำให้ข้อความดูชัดเจนขึ้น */
+    border-radius: 25px; /* ขอบโค้งมน */
+    transition: background-color 0.3s, transform 0.3s; /* เพิ่มเอฟเฟกต์เปลี่ยนสีและขยับ */
+}
+
+.back-link:hover {
+    background-color: #0056b3; /* เปลี่ยนสีพื้นหลังเมื่อ hover */
+    text-decoration: underline;
+    transform: scale(1.05); /* ขยายเล็กน้อยเมื่อ hover */
+}
+
+
+/* ตารางคำสั่งซื้อ */
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.orders-table thead {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.orders-table th {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.orders-table td {
+    font-size: 1rem;
+}
+
+/* ปุ่มในแต่ละแถว */
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.confirm-order-btn {
+    background-color: #28a745;
+    color: #fff;
+}
+
+button.confirm-order-btn:hover {
+    background-color: #218838;
+}
+
+button.complete-btn {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+button.complete-btn:hover {
+    background-color: #138496;
+}
+
+button.cancel-btn {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+button.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+/* รูปสลิป */
+.slip-image {
+    width: 50px;
+    height: auto;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
+
+.slip-image:hover {
+    transform: scale(1.1);
+}
+
+/* เพิ่มสีพื้นหลังสำหรับสถานะต่างๆ */
+.status-pending {
+    background-color: #fff3e0; /* สีพื้นหลังสำหรับ 'รอการยืนยัน' */
+}
+
+.status-confirm {
+    background-color: #d1e7dd; /* สีพื้นหลังสำหรับ 'ได้รับการยืนยัน' */
+}
+
+.status-complete {
+    background-color: #d4edda; /* สีพื้นหลังสำหรับ 'อาหารเสร็จแล้ว' */
+}
+
+.status-cancel {
+    background-color: #f8d7da; /* สีพื้นหลังสำหรับ 'ยกเลิก' */
+}
+
+/* เพิ่มสีตัวอักษรให้ตรงกับสีพื้นหลัง */
+.status-pending td,
+.status-confirm td,
+.status-complete td,
+.status-cancel td {
+    color: #333; /* สีตัวอักษรสำหรับข้อความในแต่ละสถานะ */
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    button {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}

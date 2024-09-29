@@ -110,7 +110,9 @@
 
             const statusTd = document.createElement("td");
             statusTd.textContent = getStatusText(order.status);
+            statusTd.classList.add(`status-${order.status}`);
             tr.appendChild(statusTd);
+
 
             const totalPriceTd = document.createElement("td");
             totalPriceTd.textContent = order.total_price;
@@ -126,6 +128,8 @@
             tr.appendChild(detailsTd);
 
             orderList.appendChild(tr);
+
+            
         }
     }
 

@@ -99,26 +99,26 @@
             $('#AddModal').show();
         }
 
-        function sortTable(column, order) {
-            const table = $('#table');
-            const tbody = table.find('tbody');
-            const rows = tbody.find('tr').get();
+        // function sortTable(column, order) {
+        //     const table = $('#table');
+        //     const tbody = table.find('tbody');
+        //     const rows = tbody.find('tr').get();
 
-            rows.sort((a, b) => {
-                const cellA = $(a).children('td').eq(column).text();
-                const cellB = $(b).children('td').eq(column).text();
+        //     rows.sort((a, b) => {
+        //         const cellA = $(a).children('td').eq(column).text();
+        //         const cellB = $(b).children('td').eq(column).text();
 
-                if ($.isNumeric(cellA) && $.isNumeric(cellB)) {
-                    return order === 'asc' ? cellA - cellB : cellB - cellA;
-                }
+        //         if ($.isNumeric(cellA) && $.isNumeric(cellB)) {
+        //             return order === 'asc' ? cellA - cellB : cellB - cellA;
+        //         }
 
-                return order === 'asc' ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
-            });
+        //         return order === 'asc' ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+        //     });
 
-            $.each(rows, (index, row) => {
-                tbody.append(row);
-            });
-        }
+        //     $.each(rows, (index, row) => {
+        //         tbody.append(row);
+        //     });
+        // }
 
         function previewImage(inputId) {
             const input = document.getElementById(inputId);
@@ -133,12 +133,12 @@
 
         $(document).ready(() => {
             // เรียงลำดับเมื่อคลิกที่ส่วนหัวของตาราง
-            $('#table thead th').on('click', function() {
-                const column = $(this).index();
-                const order = $(this).data('order') === 'asc' ? 'desc' : 'asc';
-                $(this).data('order', order);
-                sortTable(column, order);
-            });
+            // $('#table thead th').on('click', function() {
+            //     const column = $(this).index();
+            //     const order = $(this).data('order') === 'asc' ? 'desc' : 'asc';
+            //     $(this).data('order', order);
+            //     sortTable(column, order);
+            // });
 
             // ดึงข้อมูลร้านอาหาร
             $.ajax({
@@ -232,8 +232,8 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     $.ajax({
-                                        url: `<?= ROOT_URL ?>/api/shops/${id}`,
-                                        type: 'DELETE',
+                                        url: `<?= ROOT_URL ?>/api/shops/${id}/delete`,
+                                        type: 'POST',
                                         success: function(response) {
                                             response = JSON.parse(response);
                                             if (response.status) {
@@ -254,11 +254,16 @@
                         });
 
                         // Event handler สำหรับการส่งฟอร์มแก้ไข
+                        // Event handler สำหรับการส่งฟอร์มแก้ไข
                         $('#editForm').on('submit', function(e) {
                             e.preventDefault();
+
+                            // ดึง id ของร้านที่กำลังแก้ไขจากฟอร์ม
+                            const shopId = $('#shopId').val();
+
                             const formData = new FormData(this);
                             $.ajax({
-                                url: '<?= ROOT_URL ?>/api/shops/update',
+                                url: `<?= ROOT_URL ?>/api/shops/${shopId}/edit`, // ใช้ shopId ที่ถูกต้อง
                                 type: 'POST',
                                 data: formData,
                                 processData: false,
@@ -266,8 +271,10 @@
                                 success: function(response) {
                                     response = JSON.parse(response);
                                     if (response.status) {
-                                        Swal.fire('สำเร็จ!', 'ข้อมูลร้านอาหารถูกอัปเดตแล้ว.', 'success');
-                                        location.reload();
+                                        Swal.fire('สำเร็จ!', 'ข้อมูลร้านอาหารถูกอัปเดตแล้ว.', 'success').then(() => {
+                                            location.reload();
+                                        })
+                                        
                                     } else {
                                         Swal.fire('เกิดข้อผิดพลาด!', 'ไม่สามารถอัปเดตข้อมูลได้.', 'error');
                                     }
@@ -275,12 +282,13 @@
                             });
                         });
 
+
                         // Event handler สำหรับการส่งฟอร์มเพิ่ม
                         $('#AddForm').on('submit', function(e) {
                             e.preventDefault();
                             const formData = new FormData(this);
                             $.ajax({
-                                url: '<?= ROOT_URL ?>/api/shops/add',
+                                url: '<?= ROOT_URL ?>/api/shops/create',
                                 type: 'POST',
                                 data: formData,
                                 processData: false,

@@ -4,16 +4,6 @@ require_once 'sevice/upload.php';
 
 $id = $parameters[0];
 
-// if ($_SESSION['id'] !== $id) {
-//     if ($_SESSION['role'] !== 'super_admin') {
-//         echo json_encode([
-//             'status' => false,
-//             // 'massage' => 'ไม่สามารถแก้ไขผู้ใช้ได้'
-//         ]);
-//         return;
-//     }
-// }
-
 function getUserById($conn, $id)
 {
     $sql = "SELECT * FROM users WHERE id = $id";
@@ -51,7 +41,7 @@ $password = $_POST['password'] ?? null;
 $role = $_POST['role'] ?? $user['role'] ;
 $tel = $_POST['tel'] ?? $user['tel'] ;
 $nickname = $_POST['nickname'] ?? $user['nickname'];
-$student_id = $_POST['numberstudent'] ?? $user['student_id'];
+$student_id = $_POST['student_id'] ?? $user['student_id'];
 $room = $_POST['room'] ?? $user['room'];
 $username = $_POST['username'] ?? $firstname . " " . $lastname;
 // $role = $role === 'admin' ? 'admin' : 'user';
@@ -111,7 +101,7 @@ $user = updateUser($conn, $id, $username, $email, $firstname, $lastname, $role ,
 if ($user === 'duplicate') {
     echo json_encode([
         'status' => false,
-        'massage' => 'ชื่อผู้ใช้นี้มีอยู่แล้ว'
+        'massage' => 'มีผู้ใช้อีเมลนี้แล้ว'
     ]);
     return;
 }
@@ -128,5 +118,5 @@ $_SESSION["username"] = $user['username'];
 
 echo json_encode([
     'status' => true,
-    'massage' => 'แก้ไขผู้ใช้เรียบร้อย',
+    'massage' => 'แก้ไขผู้ใช้งานเรียบร้อยแล้ว',
 ]);

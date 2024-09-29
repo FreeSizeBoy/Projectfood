@@ -183,12 +183,12 @@
 }
 
 
-        function removeFromCart(shopId, foodId) {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cart = cart.filter(item => !(item.shopId === shopId && item.id === foodId));
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-        }
+        // function removeFromCart(shopId, foodId) {
+        //     var cart = JSON.parse(localStorage.getItem('cart')) || [];
+        //     cart = cart.filter(item => !(item.shopId === shopId && item.id === foodId));
+        //     localStorage.setItem('cart', JSON.stringify(cart));
+        //     updateCartCount();
+        // }
         $(document).ready(() => {
             fetchMenuData(); // โหลดข้อมูลเมนูเมื่อเริ่มต้น
 
