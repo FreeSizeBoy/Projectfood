@@ -45,55 +45,56 @@
             const LOCAL_STORAGE_KEY = 'ordersData';
 
             function fetchOrders() {
-    $.ajax({
-        url: '<?= ROOT_URL ?>/api/orders<?= $role == 'admin' ? "?filter=$shop_id" : "" ?>',
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            if (data.status) {
-                let orders = data.data;
+                $.ajax({
+                    url: '<?= ROOT_URL ?>/api/orders<?= $role == 'admin' ? "?filter=$shop_id" : "" ?>',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status) {
+                            let orders = data.data;
 
-                // กรองเฉพาะสถานะที่ต้องการ เช่น pending, confirm
-                orders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
+                            // กรองเฉพาะสถานะที่ต้องการ เช่น pending, confirm
+                            orders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
 
-                const previousOrders = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
+                            const previousOrders = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
 
-                // หาก LocalStorage ยังไม่มีข้อมูล ให้แสดงแจ้งเตือนสำหรับรายการใหม่
-                if (previousOrders.length === 0) {
-                    const newOrders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
+                            // หาก LocalStorage ยังไม่มีข้อมูล ให้แสดงแจ้งเตือนสำหรับรายการใหม่
+                            if (previousOrders.length === 0) {
+                                const newOrders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
 
-                    if (newOrders.length > 0) {
-                        showNewOrderAlert(newOrders);
+                                if (newOrders.length > 0) {
+                                    showNewOrderAlert(newOrders);
+                                }
+                            }
+
+                            // อัปเดตตารางและเก็บข้อมูลคำสั่งซื้อใหม่ใน localStorage
+                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(orders));
+                            updateTable(orders);
+                        } else {
+                            alert('ไม่สามารถดึงข้อมูลคำสั่งซื้อได้');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
                     }
-                }
-
-                // อัปเดตตารางและเก็บข้อมูลคำสั่งซื้อใหม่ใน localStorage
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(orders));
-                updateTable(orders);
-            } else {
-                alert('ไม่สามารถดึงข้อมูลคำสั่งซื้อได้');
+                });
             }
-        },
-        error: function(error) {
-            console.error('Error:', error);
-        }
-    });
-}
 
             function getNewOrders(previousOrders, currentOrders) {
                 const previousIds = new Set(previousOrders.map(order => order.id));
                 return currentOrders.filter(order => !previousIds.has(order.id));
             }
+            // ฟังก์ชัน getNewOrders นี่คือการ เปรียบเทียบคำสั่งซื้อเก่า (previousOrders) กับคำสั่งซื้อใหม่ (currentOrders) โดยจะหาคำสั่งซื้อที่ ไม่มีในรายการเก่า เพื่อดูว่าคำสั่งซื้อใดที่เป็นคำสั่งซื้อใหม่.
 
             function showNewOrderAlert(newOrders) {
-    Swal.fire({
-        icon: 'info',
-        title: 'มีรายการใหม่!',
-        text: `มี ${newOrders.length} รายการใหม่`,
-        confirmButtonText: 'ดูรายการ',
-        onClose: () => fetchOrders() // รีเฟรชข้อมูลหลังจากปิดการแจ้งเตือน
-    });
-}
+                Swal.fire({
+                    icon: 'info',
+                    title: 'มีรายการใหม่!',
+                    text: `มี ${newOrders.length} รายการใหม่`,
+                    confirmButtonText: 'ดูรายการ',
+                    onClose: () => fetchOrders() // รีเฟรชข้อมูลหลังจากปิดการแจ้งเตือน
+                });
+            }
 
 
             function showLargeImage(imageUrl) {
@@ -108,38 +109,38 @@
             }
 
             function updateTable(orders) {
-    const tableBody = $('#ordersTable tbody');
-    tableBody.empty(); // ล้างข้อมูลเก่า
+                const tableBody = $('#ordersTable tbody');
+                tableBody.empty(); // ล้างข้อมูลเก่า
 
-    orders.forEach(order => {
-        if (order.status !== 'cancel' && order.status !== 'complete') {
-            const menuItems = order.details.map(item => {
-                const extraText = item.extra ? ` (เพิ่มเติม: ${item.extra})` : '';
-                const noteText = item.note ? ` (หมายเหตุ: ${item.note})` : '';
-                const formattedItem = `${item.menu_name} (${item.amount} x ฿${item.price})${extraText}${noteText}`;
-                return formattedItem;
-            }).join('<br>');
+                orders.forEach(order => {
+                    if (order.status !== 'cancel' && order.status !== 'complete') {
+                        const menuItems = order.details.map(item => {
+                            const extraText = item.extra ? ` (เพิ่มเติม: ${item.extra})` : '';
+                            const noteText = item.note ? ` (หมายเหตุ: ${item.note})` : '';
+                            const formattedItem = `${item.menu_name} (${item.amount} x ฿${item.price})${extraText}${noteText}`;
+                            return formattedItem;
+                        }).join('<br>');
 
-            const statusText = getStatusText(order.status);
+                        const statusText = getStatusText(order.status);
 
-            // กำหนดคลาสตามสถานะ
-            let statusClass = '';
-            switch (order.status) {
-                case 'pending':
-                    statusClass = 'status-pending';
-                    break;
-                case 'confirm':
-                    statusClass = 'status-confirm';
-                    break;
-                case 'complete':
-                    statusClass = 'status-complete';
-                    break;
-                case 'cancel':
-                    statusClass = 'status-cancel';
-                    break;
-            }
+                        // กำหนดคลาสตามสถานะ
+                        let statusClass = '';
+                        switch (order.status) {
+                            case 'pending':
+                                statusClass = 'status-pending';
+                                break;
+                            case 'confirm':
+                                statusClass = 'status-confirm';
+                                break;
+                            case 'complete':
+                                statusClass = 'status-complete';
+                                break;
+                            case 'cancel':
+                                statusClass = 'status-cancel';
+                                break;
+                        }
 
-            const row = `
+                        const row = `
                 <tr class="${statusClass}">
                     <td>${order.username}</td>
                     <td>${order.room}</td>
@@ -158,37 +159,37 @@
                     </td>
                 </tr>
             `;
-            tableBody.append(row);
-        }
-    });
+                        tableBody.append(row);
+                    }
+                });
 
-    // เพิ่ม event listeners สำหรับปุ่ม
-    $('.confirm-order-btn').on('click', function() {
-        const id = $(this).data('id');
-        const status = $(this).data('status');
-        updateOrderStatus(id, status);
-    });
+                // เพิ่ม event listeners สำหรับปุ่ม
+                $('.confirm-order-btn').on('click', function() {
+                    const id = $(this).data('id');
+                    const status = $(this).data('status');
+                    updateOrderStatus(id, status);
+                });
 
-    $('.complete-btn').on('click', function() {
-        const id = $(this).data('id');
-        const status = $(this).data('status');
-        updateOrderStatus(id, status);
-    });
+                $('.complete-btn').on('click', function() {
+                    const id = $(this).data('id');
+                    const status = $(this).data('status');
+                    updateOrderStatus(id, status);
+                });
 
-    $('.cancel-btn').on('click', function() {
-        const id = $(this).data('id');
-        const status = $(this).data('status');
-        if (confirm('คุณแน่ใจหรือไม่? การยกเลิกจะไม่สามารถกู้คืนได้!')) {
-            updateOrderStatus(id, status);
-        }
-    });
+                $('.cancel-btn').on('click', function() {
+                    const id = $(this).data('id');
+                    const status = $(this).data('status');
+                    if (confirm('คุณแน่ใจหรือไม่? การยกเลิกจะไม่สามารถกู้คืนได้!')) {
+                        updateOrderStatus(id, status);
+                    }
+                });
 
-    // เพิ่ม event listener สำหรับรูปภาพสลิป
-    $('.slip-image').on('click', function() {
-        const imageUrl = $(this).data('image');
-        showLargeImage(imageUrl);
-    });
-}
+                // เพิ่ม event listener สำหรับรูปภาพสลิป
+                $('.slip-image').on('click', function() {
+                    const imageUrl = $(this).data('image');
+                    showLargeImage(imageUrl);
+                });
+            }
 
 
             function updateOrderStatus(id, status) {

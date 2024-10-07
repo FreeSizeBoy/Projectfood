@@ -108,7 +108,7 @@ h1 {
     padding: 10px;
     background: #ecf0f1;
     color: #333;
-    font-size: 16px;
+    font-size: 14px;
     z-index: 1;
     position: relative;
 }
@@ -179,5 +179,28 @@ h1 {
 
     .buttons button:last-child {
         margin-bottom: 0;
+    }
+}
+@media (max-width: 320px) {
+    h1 {
+        font-size: 20px; /* ลดขนาดข้อความในหัว */
+    }
+    
+    .total-price {
+        font-size: 16px; /* ลดขนาดข้อความรวม */
+    }
+
+    button {
+        font-size: 14px; /* ลดขนาดปุ่ม */
+        flex: 1; /* ให้ปุ่มทั้งสองมีขนาดเท่ากัน */
+        margin: 0 5px; /* เพิ่ม margin ระหว่างปุ่ม */
+    }
+
+    .buttons {
+        flex-direction: column; /* จัดปุ่มในแนวตั้ง */
+    }
+
+    #confirm-payment, #cancel-payment {
+        width: 100%; /* ทำให้ปุ่มเต็มขนาด */
     }
 }

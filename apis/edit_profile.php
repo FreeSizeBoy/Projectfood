@@ -44,6 +44,7 @@ $nickname = $_POST['nickname'] ?? $user['nickname'];
 $student_id = $_POST['student_id'] ?? $user['student_id'];
 $room = $_POST['room'] ?? $user['room'];
 $username = $_POST['username'] ?? $firstname . " " . $lastname;
+$birthday = $_POST['dob'] ?? $user['birthday'];
 // $role = $role === 'admin' ? 'admin' : 'user';
 $imageUrl = $_FILES['uploadImage']["name"] ?? null;
 
@@ -77,7 +78,7 @@ function getUserByemail($conn, $email)
     return $result->fetch_assoc();
 }
 
-function updateUser($conn, $id, $username, $email, $firstname, $lastname, $role , $nickname, $tel , $password, $student_id, $room , $img_url)
+function updateUser($conn, $id, $username, $email, $firstname, $lastname, $role , $nickname, $tel , $password, $student_id, $room , $img_url , $birthday)
 {
     $user = getUserById($conn, $id);
     if ($user['email'] !== $email) {
@@ -87,14 +88,14 @@ function updateUser($conn, $id, $username, $email, $firstname, $lastname, $role 
         }
     }
 
-    $sql = "UPDATE users SET username = '$username', email = '$email', fname = '$firstname', lname = '$lastname', nickname = '$nickname' , password = '$password' , tel = '$tel' , role = '$role' , student_id = '$student_id' , room = '$room', img_url = '$img_url' WHERE id = $id";
+    $sql = "UPDATE users SET username = '$username', email = '$email', fname = '$firstname', lname = '$lastname', nickname = '$nickname' , password = '$password' , tel = '$tel' , role = '$role' , student_id = '$student_id' , room = '$room', img_url = '$img_url' , birthday = '$birthday' WHERE id = $id";
 
     $conn->query($sql);
 
     return getUserById($conn, $id);
 }
 
-$user = updateUser($conn, $id, $username, $email, $firstname, $lastname, $role , $nickname, $tel , $password , $student_id, $room , $imageUrl);
+$user = updateUser($conn, $id, $username, $email, $firstname, $lastname, $role , $nickname, $tel , $password , $student_id, $room , $imageUrl, $birthday);
 
 
 

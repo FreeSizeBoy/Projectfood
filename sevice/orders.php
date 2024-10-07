@@ -24,62 +24,79 @@ function getOrdersById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getOrders($conn, $page = 1, $limit = 10, $filter = '' ,$search = '')
+function getOrders($conn, $page = 1, $limit = 10, $filter = '')
 {
     $offset = ($page - 1) * $limit;
 
-    // SQL query to join orders with users, order details, and menus
-    $sql = "
+    // Step 1: Get the main orders
+    $sqlOrders = "
         SELECT 
-            orders.*, 
+            orders.id,
+            orders.shop_id,
+            orders.user_id,
+            orders.total_price,
+            orders.status,
+            orders.slip,
+            orders.createdAt,
             users.username,
             users.nickname,
             users.room,
-            users.email,
-            orders_details.menu_id,
-            orders_details.price AS detail_price,
-            orders_details.amount AS detail_amount,
-            orders_details.note,
-            orders_details.extra,
-            menus.menuname AS menu_name,
-            menus.image_url AS menu_image
+            users.email
         FROM orders
-        JOIN users ON orders.user_id = users.id
-        LEFT JOIN orders_details ON orders.id = orders_details.orders_id
-        LEFT JOIN menus ON orders_details.menu_id = menus.id
-        WHERE users.username LIKE '%$search%' ";
+        JOIN users ON orders.user_id = users.id";
+    
+    // Add filter condition for orders
+    if (!empty($filter)) {
+        $sqlOrders .= " WHERE orders.shop_id = '$filter'";
+    }
+    
+    $sqlOrders .= " LIMIT $limit OFFSET $offset";
 
-    if(!empty($filter)){
-        $sql = $sql . " AND orders.shop_id = '$filter' ";
+    $resultOrders = $conn->query($sqlOrders);
+    $orders = [];
+    
+    while ($row = $resultOrders->fetch_assoc()) {
+        // Store main order details
+        $orderId = $row['id'];
+        $orders[$orderId] = [
+            'id' => $row['id'],
+            'shop_id' => $row['shop_id'],
+            'user_id' => $row['user_id'],
+            'total_price' => $row['total_price'],
+            'status' => $row['status'],
+            'slip' => $row['slip'],
+            'createdAt' => $row['createdAt'],
+            'username' => $row['username'],
+            'nickname' => $row['nickname'],
+            'room' => $row['room'],
+            'email' => $row['email'],
+            'details' => []
+        ];
     }
 
-    $sql = $sql . "LIMIT $limit OFFSET $offset ";
+    // Step 2: Get order details
+    $orderIds = implode(',', array_keys($orders));
     
-    $result = $conn->query($sql);
-
-    $orders = [];
-    while ($row = $result->fetch_assoc()) {
-        // Organize order details under their respective orders
-        $orderId = $row['id'];
-        if (!isset($orders[$orderId])) {
-            $orders[$orderId] = [
-                'id' => $row['id'],
-                'shop_id' => $row['shop_id'],
-                'user_id' => $row['user_id'],
-                'total_price' => $row['total_price'],
-                'status' => $row['status'],
-                'slip' => $row['slip'],
-                'createdAt' => $row['createdAt'],
-                'username' => $row['username'],
-                'nickname' => $row['nickname'],
-                'room' => $row['room'],
-                'email' => $row['email'],
-                'details' => []
-            ];
-        }
+    if (!empty($orderIds)) {
+        $sqlDetails = "
+            SELECT 
+                orders_details.orders_id,
+                orders_details.menu_id,
+                orders_details.price AS detail_price,
+                orders_details.amount AS detail_amount,
+                orders_details.note,
+                orders_details.extra,
+                menus.menuname AS menu_name,
+                menus.image_url AS menu_image
+            FROM orders_details
+            LEFT JOIN menus ON orders_details.menu_id = menus.id
+            WHERE orders_details.orders_id IN ($orderIds)";
         
-        // Add order details including menu information
-        if ($row['menu_id']) {
+        $resultDetails = $conn->query($sqlDetails);
+        
+        while ($row = $resultDetails->fetch_assoc()) {
+            $orderId = $row['orders_id'];
+            // Add order details including menu information
             $orders[$orderId]['details'][] = [
                 'menu_id' => $row['menu_id'],
                 'menu_name' => $row['menu_name'],
@@ -94,6 +111,7 @@ function getOrders($conn, $page = 1, $limit = 10, $filter = '' ,$search = '')
 
     return array_values($orders); // Return as a list of orders
 }
+
 
 
 
@@ -146,7 +164,7 @@ function createOrdersV2($conn, $user_id, $shop_id, $menus, $slips)
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iisss", $shop_id, $user_id, $total_price, $status, $slips);
         $stmt->execute();
-        
+
         // ดึง ID ของคำสั่งซื้อใหม่
         $order_id = $conn->insert_id;
 
@@ -208,6 +226,37 @@ function createOrdersV2($conn, $user_id, $shop_id, $menus, $slips)
         ];
     }
 }
+// โค้ดนี้เป็นฟังก์ชัน PHP ที่ชื่อว่า createOrdersV2 ซึ่งใช้ในการสร้างคำสั่งซื้อใหม่พร้อมรายละเอียดเมนูอาหารที่สั่ง โดยทำงานภายใต้การจัดการธุรกรรม (transaction) ซึ่งจะช่วยให้ข้อมูลไม่เสียหายถ้ามีข้อผิดพลาดระหว่างการดำเนินการ โดยเราสามารถอธิบายขั้นตอนแบบกันเองได้ว่า:
+
+// เริ่มต้นธุรกรรม (Transaction):
+
+// ฟังก์ชันจะเริ่มต้นด้วยการเปิดการทำธุรกรรม ($conn->begin_transaction()) เพื่อให้มั่นใจว่าการทำงานหลายขั้นตอน (การสั่งซื้อและตัดสต็อก) จะถูกบันทึกหรือยกเลิกทั้งชุดหากเกิดข้อผิดพลาด
+// ตรวจสอบสถานะร้าน:
+
+// ฟังก์ชันจะตรวจสอบสถานะของร้านค้าก่อน ถ้าร้านถูกปิด (status === 'ปิด') จะไม่อนุญาตให้สั่งซื้อและจะโยนข้อผิดพลาดออกมา
+// คำนวณราคาทั้งหมด:
+
+// ฟังก์ชันจะเริ่มต้นคำนวณราคาทั้งหมดเป็นศูนย์ ($total_price = 0) และเตรียมสร้างคำสั่งซื้อใหม่
+// สถานะเริ่มต้นของคำสั่งซื้อถูกตั้งเป็น 'pending' และมีการบันทึกข้อมูลคำสั่งซื้อไปยังตาราง orders
+// แทรกรายละเอียดการสั่งซื้อ:
+
+// ฟังก์ชันจะวนลูปผ่านรายการเมนู ($menus) ที่สั่ง โดยสำหรับแต่ละเมนู:
+// ตรวจสอบสต็อกว่าพอสำหรับจำนวนที่สั่งหรือไม่ ถ้าไม่พอก็จะโยนข้อผิดพลาดออกมา
+// คำนวณราคาของเมนูตามจำนวนที่สั่งและตัวเลือกเพิ่มเติม (extra) หากมี
+// บันทึกรายละเอียดของแต่ละเมนูลงในตาราง orders_details
+// อัปเดตจำนวนสต็อกในตาราง menus หลังจากสั่งซื้อ
+// อัปเดตราคาทั้งหมดในคำสั่งซื้อ:
+
+// หลังจากคำนวณราคาทั้งหมดจากรายการเมนูแล้ว ฟังก์ชันจะอัปเดตราคานี้ในตาราง orders
+// Commit หรือ Rollback:
+
+// ถ้าทุกอย่างทำงานได้สำเร็จ ฟังก์ชันจะ commit การทำธุรกรรมเพื่อบันทึกข้อมูลทั้งหมด
+// ถ้ามีข้อผิดพลาดเกิดขึ้นในกระบวนการใดๆ ฟังก์ชันจะ rollback การทำธุรกรรมเพื่อยกเลิกการเปลี่ยนแปลงทั้งหมด
+// ส่งผลลัพธ์:
+
+// ถ้าทำงานสำเร็จ ฟังก์ชันจะส่งผลลัพธ์เป็นสถานะ true พร้อมกับข้อมูลคำสั่งซื้อที่เพิ่งสร้าง
+// ถ้าเกิดข้อผิดพลาด จะส่งสถานะ false พร้อมข้อความข้อผิดพลาด
+// สรุปง่ายๆ ก็คือ ฟังก์ชันนี้ช่วยให้เราสร้างคำสั่งซื้อใหม่ที่ประกอบด้วยรายการเมนูหลายรายการ และจัดการการลดสต็อกพร้อมกันด้วย ถ้ามีข้อผิดพลาดเกิดขึ้นทุกการเปลี่ยนแปลงจะถูกยกเลิกเพื่อความปลอดภัยของข้อมูล!
 
 
 function updateOrders($conn, $id, $user_id, $menu_id, $price, $status, $slip)

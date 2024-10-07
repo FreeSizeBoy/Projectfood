@@ -617,3 +617,228 @@
     justify-content: center; /* จัดตำแหน่งแนวนอน */
     font-size: 12px; /* ขนาดฟอนต์ของตัวเลข */
 }
+/* ทำให้หน้าเว็บตอบสนองกับหน้าจอขนาดเล็กตั้งแต่ 320px ถึง 802px */
+@media screen and (max-width: 802px) {
+    .containers {
+        padding: 10px;
+    }
+
+    .main {
+        text-align: center;
+    }
+
+    .main img {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+    }
+
+    .main h2 {
+        font-size: 1.5rem;
+    }
+
+    .main button {
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+
+    .main-img-cen img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .main-cen {
+        padding: 10px;
+    }
+
+    .main-cen h2 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .main-cen p {
+        font-size: 0.9rem;
+        text-align: justify;
+    }
+
+    .main-downs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .main-downs img {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .carousel-inner img {
+        width: 100%;
+        height: auto;
+    }
+
+    .main-footer,
+    .main-footers {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .main-footer h4 {
+        font-size: 1.2rem;
+    }
+
+    .main-footer p,
+    .main-footers p {
+        font-size: 0.9rem;
+    }
+}
+/* ทำให้หน้าเว็บตอบสนองกับหน้าจอขนาดตั้งแต่ 768px ถึง 802px */
+@media screen and (min-width: 768px) and (max-width: 802px) {
+    .containers {
+        padding: 20px;
+    }
+
+    .main {
+        text-align: center;
+    }
+
+    .main img {
+        width: 80%;
+        height: auto;
+        max-height: 400px;
+    }
+
+    .main h2 {
+        font-size: 2rem;
+    }
+
+    .main button {
+        font-size: 1.2rem;
+        margin-top: 15px;
+    }
+
+    .main-img-cen {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .main-img-cen img {
+        width: 45%;
+        height: auto;
+    }
+
+    .main-cen {
+        padding: 15px;
+    }
+
+    .main-cen h2 {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .main-cen p {
+        font-size: 1rem;
+        text-align: justify;
+    }
+
+    .main-downs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .main-downs img {
+        width: calc(33% - 20px);
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .carousel-inner img {
+        width: 100%;
+        height: auto;
+    }
+
+    .main-footer,
+    .main-footers {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .main-footer h4 {
+        font-size: 1.5rem;
+    }
+
+    .main-footer p,
+    .main-footers p {
+        font-size: 1rem;
+    }
+}
+/* ทำให้หน้าเว็บตอบสนองกับหน้าจอขนาดเล็กตั้งแต่ 320px ถึง 802px */
+@media screen and (max-width: 802px) {
+    .menu-main {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .menu-mains {
+        margin-bottom: 15px;
+    }
+
+    .menu-items,
+    .menu-item {
+        width: 100%;
+        margin: 15px auto;
+    }
+
+    .menu-item img {
+        width: 100%;
+        height: auto;
+        max-width: 300px;
+        border-radius: 8px;
+    }
+
+    .menu-item h4 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .menu-item button {
+        font-size: 0.9rem;
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .closed,
+    .out-of-stock {
+        font-size: 16px;
+        padding: 5px 10px;
+    }
+
+    .carousel-inner img {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+    }
+
+    .main-footer,
+    .main-footers {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .main-footer h4,
+    .main-footer p,
+    .main-footers p {
+        font-size: 1rem;
+    }
+    
+}

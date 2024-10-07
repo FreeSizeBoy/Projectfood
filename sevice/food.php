@@ -11,12 +11,12 @@ function getMenusById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getMenus($conn, $page = 1, $limit = 10, $search = '', $filter = '' , $shopId = null )
+function getMenus($conn, $page = 1, $limit = 10, $shopId = null )
 {
     $offset = ($page - 1) * $limit;
 
     // เริ่มต้นสร้างคิวรี SQL
-    $sql = "SELECT * FROM menus WHERE (menuname LIKE ? OR type LIKE ?)";
+    $sql = "SELECT * FROM menus WHERE (1 = 1)";
 
     // หาก $shopId ถูกระบุ ให้เพิ่มเงื่อนไขในการค้นหา
     if ($shopId !== null) {
@@ -37,13 +37,13 @@ function getMenus($conn, $page = 1, $limit = 10, $search = '', $filter = '' , $s
     $stmt = $conn->prepare($sql);
 
     // สร้างพารามิเตอร์สำหรับ bind_param
-    $searchParam = "%$search%";
+   
     if ($shopId !== null) {
         // หาก $shopId ถูกระบุ
-        $stmt->bind_param('ssiii', $searchParam, $searchParam, $shopId, $limit, $offset);
+        $stmt->bind_param('iii',  $shopId, $limit, $offset);
     } else {
         // หาก $shopId ไม่ถูกระบุ
-        $stmt->bind_param('ssii', $searchParam, $searchParam, $limit, $offset  );
+        $stmt->bind_param('ii', $limit, $offset  );
     }
 
     $stmt->execute();

@@ -61,9 +61,6 @@ if (isset($_SESSION['id'])) {
                         จดจำรหัสผ่าน
                     </label>
                 </div>
-                <div class="wrap">
-                    <label><a href="#">ลืมรหัสผ่าน</a></label>
-                </div>
                 <button type="submit" class="button">
                     <h1 class="sign">เข้าสู่ระบบ</h1>
                 </button>
@@ -79,11 +76,32 @@ if (isset($_SESSION['id'])) {
 </body>
 </html>
 
-    <script>
+<script>
+    $(document).ready(function () {
+        // เมื่อหน้าเว็บโหลด ตรวจสอบว่ามีข้อมูลใน Local Storage หรือไม่
+        if (localStorage.getItem('remember') === 'true') {
+            $('#email').val(localStorage.getItem('email'));
+            $('#password').val(localStorage.getItem('password'));
+            $('#remember').prop('checked', true);
+        }
+
+        // เมื่อผู้ใช้คลิกปุ่มเข้าสู่ระบบ
         $('[data-form="login"]').on('submit', (e) => {
             e.preventDefault();
             $('button[type="submit"]').prop('disabled', true);
             const data = $(e.target).serializeArray();
+
+            // ตรวจสอบว่าผู้ใช้ต้องการจดจำรหัสผ่านหรือไม่
+            if ($('#remember').is(':checked')) {
+                localStorage.setItem('remember', 'true');
+                localStorage.setItem('email', $('#email').val());
+                localStorage.setItem('password', $('#password').val());
+            } else {
+                localStorage.removeItem('remember');
+                localStorage.removeItem('email');
+                localStorage.removeItem('password');
+            }
+
             $.ajax({
                 url: '<?= ROOT_URL ?>/api/login',
                 type: 'POST',
@@ -111,14 +129,16 @@ if (isset($_SESSION['id'])) {
                 error: function(response) {
                     $('button[type="submit"]').prop('disabled', false);
                     console.log(response);
-                    swal.fire({
+                    Swal.fire({
                         icon: 'error',
                         title: 'เกิดข้อผิดพลาด'
                     });
                 }
             });
         });
-    </script>
+    });
+</script>
+
 </body>
 
 </html>

@@ -57,6 +57,7 @@ function getUserByIdWithOrders($conn, $id)
                 'img_url' => $row['img_url'],
                 'username' => $row['username'],
                 'nickname' => $row['nickname'],
+                'birthday' => $row['birthday'],
             ];
         }
 

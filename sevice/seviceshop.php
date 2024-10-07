@@ -11,7 +11,7 @@ function getShopById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getShops($conn, $page = 1, $limit = 10, $search = '' , $filter = '')
+function getShops($conn, $page = 1, $limit = 10, $filter = '')
 {
     $offset = ($page - 1) * $limit;
 
@@ -29,7 +29,7 @@ function getShops($conn, $page = 1, $limit = 10, $search = '' , $filter = '')
         FROM shops
         JOIN users ON shops.owner_id = users.id
         LEFT JOIN menus ON shops.id = menus.shop_id
-        WHERE (shops.shopname LIKE ? OR menus.menuname LIKE ?) ";
+        ";
 
     if(!empty($filter)){
         $sql = $sql . "AND shops.owner_id = '$filter'";
@@ -38,8 +38,7 @@ function getShops($conn, $page = 1, $limit = 10, $search = '' , $filter = '')
     $sql = $sql . 'LIMIT ? OFFSET ?';
 
     $stmt = $conn->prepare($sql);
-    $searchParam = "%$search%";
-    $stmt->bind_param('ssii', $searchParam, $searchParam, $limit, $offset);
+    $stmt->bind_param('ii', $limit, $offset);
     $stmt->execute();
 
     $result = $stmt->get_result();

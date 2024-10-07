@@ -154,3 +154,51 @@ li {
         width: 90%;
     }
 }
+@media only screen and (max-width: 375px) {
+    h1 {
+        font-size: 20px; /* ลดขนาดฟอนต์เมื่อหน้าจอเล็ก */
+    }
+
+    table, th, td {
+        font-size: 12px; /* ลดขนาดฟอนต์ในตาราง */
+    }
+
+    th, td {
+        padding: 8px; /* ลด padding ในตาราง */
+    }
+
+    button {
+        width: 100%; /* ปรับปุ่มให้เต็มหน้าจอ */
+        padding: 12px;
+    }
+
+    .modal-content {
+        width: 95%; /* ขยาย modal ให้รองรับหน้าจอมือถือได้ดีขึ้น */
+        margin: 5% auto;
+    }
+}
+@media only screen and (max-width: 320px) {
+    h1 {
+        font-size: 18px; /* ลดขนาดฟอนต์เพิ่มอีกสำหรับหน้าจอเล็ก */
+    }
+
+    table, th, td {
+        font-size: 11px; /* ลดขนาดฟอนต์ให้เหมาะสม */
+    }
+
+    th, td {
+        padding: 6px; /* ลด padding ในตารางให้เล็กลง */
+    }
+
+    button {
+        width: 100%; /* ปรับปุ่มให้เต็มหน้าจอ */
+        padding: 10px; /* ลด padding ของปุ่ม */
+        font-size: 12px; /* ลดขนาดฟอนต์ในปุ่ม */
+    }
+
+    .modal-content {
+        width: 100%; /* ใช้ 100% ของหน้าจอ */
+        margin: 5% auto;
+    }
+}
+

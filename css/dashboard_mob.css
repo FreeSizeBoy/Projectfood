@@ -185,3 +185,66 @@ button.cancel-btn:hover {
         font-size: 0.8rem;
     }
 }
+@media (max-width: 425px) {
+    .dashboard-header h1 {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .dashboard-main {
+        padding: 10px;
+    }
+
+    .back-link {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    .orders-table {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .orders-table th, .orders-table td {
+        padding: 8px;
+    }
+
+    .orders-table th {
+        font-size: 14px;
+    }
+
+    .slip-image {
+        width: 30px;
+    }
+
+    /* ซ่อนปุ่มเมื่อหน้าจอเล็กลง */
+    .orders-table td button {
+        font-size: 12px;
+        padding: 5px 10px;
+        margin-bottom: 5px;
+    }
+
+    /* ทำให้ตารางเป็นแนวตั้งถ้าจอเล็กมาก */
+    .orders-table thead {
+        display: none;
+    }
+
+    .orders-table tr {
+        display: block;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .orders-table td {
+        display: block;
+        text-align: right;
+        font-size: 14px;
+    }
+
+    .orders-table td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+    }
+}

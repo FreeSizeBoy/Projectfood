@@ -11,12 +11,12 @@ function getExpensesById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getExpenses($conn, $page = 1, $limit = 10, $search = '', $filter = '', $shopId = null)
+function getExpenses($conn, $page = 1, $limit = 10, $shopId = null)
 {
     $offset = ($page - 1) * $limit;
 
     // Start building the SQL query
-    $sql = "SELECT * FROM Expenses WHERE (note LIKE ?)";
+    $sql = "SELECT * FROM Expenses WHERE (1 = 1)";
 
     // If $shopId is specified, add a condition to filter by shop_id
     if ($shopId !== null) {
@@ -28,9 +28,6 @@ function getExpenses($conn, $page = 1, $limit = 10, $search = '', $filter = '', 
     }
 
     // If filter is provided, append to the SQL query
-    if (!empty($filter)) {
-        $sql .= " AND shop_id = ?";
-    }
 
     $sql .= " LIMIT ? OFFSET ?";
 
@@ -38,21 +35,14 @@ function getExpenses($conn, $page = 1, $limit = 10, $search = '', $filter = '', 
     $stmt = $conn->prepare($sql);
 
     // Create parameters for bind_param
-    $searchParam = "%$search%";
 
     // Determine the parameter types and bind them accordingly
-    if ($shopId !== null && !empty($filter)) {
-        // If both $shopId and $filter are specified
-        $stmt->bind_param('siiii', $searchParam, $shopId, $filter, $limit, $offset);
-    } elseif ($shopId !== null) {
+    if  ($shopId !== null) {
         // If only $shopId is specified
-        $stmt->bind_param('siii', $searchParam, $shopId, $limit, $offset);
-    } elseif (!empty($filter)) {
-        // If only $filter is specified
-        $stmt->bind_param('siii', $searchParam, $filter, $limit, $offset);
-    } else {
+        $stmt->bind_param('iii',  $shopId, $limit, $offset);
+    }  else {
         // If neither $shopId nor $filter is specified
-        $stmt->bind_param('sii', $searchParam, $limit, $offset);
+        $stmt->bind_param('ii',  $limit, $offset);
     }
 
     $stmt->execute();
