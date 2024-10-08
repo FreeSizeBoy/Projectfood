@@ -3,7 +3,7 @@
 require_once 'database.php';
 
 $page = $_GET['page'] ?? 1;
-$limit = $_GET['limit'] ?? 10;
+$limit = $_GET['limit'] ?? 1000;
 $search = $_GET['search'] ?? '';
 
 function getUsers($conn, $page = 1, $limit = 10, $search = '')

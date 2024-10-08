@@ -16,9 +16,9 @@ $dailySalesQuery = "SELECT SUM(total_price) AS total FROM orders WHERE status = 
 $monthlySalesQuery = "SELECT SUM(total_price) AS total FROM orders WHERE status = 'complete' AND shop_id = ? AND MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE())";
 
 // รายจ่ายรวม
-$totalExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ?";
-$dailyExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ? AND DATE(createdAt) = CURDATE()";
-$monthlyExpensesQuery = "SELECT SUM(priceout) AS total FROM Expenses WHERE shop_id = ? AND MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE())";
+$totalExpensesQuery = "SELECT SUM(priceout) AS total FROM expenses WHERE shop_id = ?";
+$dailyExpensesQuery = "SELECT SUM(priceout) AS total FROM expenses WHERE shop_id = ? AND DATE(createdAt) = CURDATE()";
+$monthlyExpensesQuery = "SELECT SUM(priceout) AS total FROM expenses WHERE shop_id = ? AND MONTH(createdAt) = MONTH(CURDATE()) AND YEAR(createdAt) = YEAR(CURDATE())";
 
 // ฟังก์ชันสำหรับประมวลผลคำสั่ง SQL และส่งค่า
 function getAmount($conn, $query, $shopId)

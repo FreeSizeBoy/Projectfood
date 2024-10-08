@@ -82,7 +82,7 @@ $sql = "
     SELECT 
         $periodQuery AS period,
         SUM(priceout) AS total_expenses
-    FROM Expenses
+    FROM expenses
     WHERE YEAR(createdAt) $between ?
     AND shop_id = ?
     $groupBy

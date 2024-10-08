@@ -93,7 +93,7 @@ if (!$conn->query($sql)) {
     die("เชื่อมต่อไม่ได้");
 }
 
-$sql = "CREATE TABLE IF NOT EXISTS Expenses(
+$sql = "CREATE TABLE IF NOT EXISTS expenses(
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY ,
     shop_id INT(6) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -1,6 +1,6 @@
 <?php
 $id = $_SESSION['id'] ?? null;
-$img_url = $_SESSION['img_url'] ?? Profile_defulte;
+$img_url = !empty($_SESSION['img_url']) ? $_SESSION['img_url'] : Profile_defulte;
 $username = $_SESSION['username'] ?? null;
 
 include_once "database.php";

@@ -84,7 +84,7 @@ function updateUser($conn, $id, $username, $email, $firstname, $lastname, $role 
     if ($user['email'] !== $email) {
         $user = getUserByemail($conn, $email);
         if ($user !== null) {
-            return 'duplicate';
+            return 'อีเมลซ้ำ';
         }
     }
 
@@ -99,7 +99,7 @@ $user = updateUser($conn, $id, $username, $email, $firstname, $lastname, $role ,
 
 
 
-if ($user === 'duplicate') {
+if ($user === 'อีเมลซ้ำ') {
     echo json_encode([
         'status' => false,
         'massage' => 'มีผู้ใช้อีเมลนี้แล้ว'

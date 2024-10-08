@@ -12,7 +12,7 @@
 
 <body>
 <?php
-        include "component\head.php";
+        include "./component/head.php";
 
     ?>
     <div class="menu-main">

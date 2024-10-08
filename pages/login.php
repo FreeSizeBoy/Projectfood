@@ -8,6 +8,8 @@ if (isset($_SESSION['id'])) {
     }
 } 
 
+// include_once 'database.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +40,7 @@ if (isset($_SESSION['id'])) {
 </head>
 <body>
 <?php
-    include "component\head.php";
+    include "./component/head.php";
 
     ?>
     <div class="login-form">

@@ -68,8 +68,9 @@ function route($route, $path_to_include)
   // Get URI and filter illegal characters
   $request_url = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
 
+
   // Remove the subdirectory name from the request URL
-  $request_url = str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $request_url);
+  // $request_url = str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $request_url);
 
   // Remove trailing slash
   $request_url = rtrim($request_url, '/');
@@ -81,12 +82,13 @@ function route($route, $path_to_include)
   $route_parts = explode('/', $route);
   // Split Request URL
   $request_url_parts = explode('/', $request_url);
+  
   // Remove empty string
   array_shift($route_parts);
   array_shift($request_url_parts);
 
   // If the route is empty and the request URL is empty
-  if ($route_parts[0] == '' && count($request_url_parts) == 0) {
+  if ($route_parts[0] === '' && count($request_url_parts) === 0) {
     include_once("$ROOT/$path_to_include");
     exit();
   }

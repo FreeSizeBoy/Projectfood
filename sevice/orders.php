@@ -24,10 +24,8 @@ function getOrdersById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getOrders($conn, $page = 1, $limit = 10, $filter = '')
+function getOrders($conn, $filter = '')
 {
-    $offset = ($page - 1) * $limit;
-
     // Step 1: Get the main orders
     $sqlOrders = "
         SELECT 
@@ -49,8 +47,6 @@ function getOrders($conn, $page = 1, $limit = 10, $filter = '')
     if (!empty($filter)) {
         $sqlOrders .= " WHERE orders.shop_id = '$filter'";
     }
-    
-    $sqlOrders .= " LIMIT $limit OFFSET $offset";
 
     $resultOrders = $conn->query($sqlOrders);
     $orders = [];

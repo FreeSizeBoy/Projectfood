@@ -12,11 +12,11 @@
 </head>
 
 <body>
-<?php
+    <?php
 
-include_once "component/dashborad.php"
+    include_once "component/dashborad.php"
 
-?>
+    ?>
     <div class="main-content">
         <header>
             <h1>ยินดีต้อนรับสู่ Dashboard ของร้านอาหาร</h1>
@@ -38,7 +38,7 @@ include_once "component/dashborad.php"
                     </tr>
                 </thead>
                 <tbody>
-                    
+
 
 
                 </tbody>
@@ -140,68 +140,46 @@ include_once "component/dashborad.php"
                                                     title: response.massage
                                                 });
                                             }
-                                        } 
+                                        }
 
-                                        
+
                                     });
                                 } else if (action === 'Delete') {
-                                    // $.ajax({
-                                    //     url: `<?= ROOT_URL ?>/api/users/${id}/delete`,
-                                    //     type: 'POST',
-                                    //     success: function(response) {
-                                    //         response = JSON.parse(response);
-                                    //         if (response.status) {
-                                    //             Swal.fire({                                                  
-                                    //                 icon: 'success',
-                                    //                 title: response.massage,
-                                    //                 showConfirmButton: false,
-                                    //                 timer: 1500
-                                    //             }).then(() => {
-                                    //                 location.reload();
-                                    //             });
-                                    //         } else {
-                                    //             Swal.fire({
-                                    //                 icon: 'error',
-                                    //                 title: response.massage
-                                    //             });
-                                    //         }
-                                    //     }
-                                    // });
                                     Swal.fire({
-                            title: 'คุณแน่ใจหรือไม่?',
-                            text: 'การลบข้อมูลจะไม่สามารถกู้คืนได้!',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#ff4081',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'ลบ',
-                            cancelButtonText: 'ยกเลิก'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                $.ajax({
-                                    url: `<?= ROOT_URL ?>/api/users/${id}/delete`,
-                                    type: 'POST',
-                                    success: function(response) {
-                                        response = JSON.parse(response);
-                                        if (response.status) {
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: response.massage,
-                                                showConfirmButton: false,
-                                                timer: 1500
-                                            }).then(() => {
-                                                location.reload();
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: response.massage
+                                        title: 'คุณแน่ใจหรือไม่?',
+                                        text: 'การลบข้อมูลจะไม่สามารถกู้คืนได้!',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#ff4081',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'ลบ',
+                                        cancelButtonText: 'ยกเลิก'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            $.ajax({
+                                                url: `<?= ROOT_URL ?>/api/users/${id}/delete`,
+                                                type: 'POST',
+                                                success: function(response) {
+                                                    response = JSON.parse(response);
+                                                    if (response.status) {
+                                                        Swal.fire({
+                                                            icon: 'success',
+                                                            title: response.massage,
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                        }).then(() => {
+                                                            location.reload();
+                                                        });
+                                                    } else {
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: response.massage
+                                                        });
+                                                    }
+                                                }
                                             });
                                         }
-                                    }
-                                });
-                            }
-                        });
+                                    });
                                 } else if (action === "password") {
                                     $('#editpassword').show();
                                     $('#userId').val(id);

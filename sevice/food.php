@@ -11,10 +11,8 @@ function getMenusById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getMenus($conn, $page = 1, $limit = 10, $shopId = null )
+function getMenus($conn, $shopId = null)
 {
-    $offset = ($page - 1) * $limit;
-
     // เริ่มต้นสร้างคิวรี SQL
     $sql = "SELECT * FROM menus WHERE (1 = 1)";
 
@@ -27,23 +25,12 @@ function getMenus($conn, $page = 1, $limit = 10, $shopId = null )
         $sql .= " AND shop_id = ?";
     }
 
-    // if(!empty($filter)){
-    //     $sql = $sql . " AND shops.owner_id = '$filter' ";
-    // }
-
-    $sql .= " LIMIT ? OFFSET ?";
-
     // เตรียมคำสั่ง SQL
     $stmt = $conn->prepare($sql);
 
-    // สร้างพารามิเตอร์สำหรับ bind_param
-   
+    // ตรวจสอบและ bind พารามิเตอร์ตามที่กำหนด
     if ($shopId !== null) {
-        // หาก $shopId ถูกระบุ
-        $stmt->bind_param('iii',  $shopId, $limit, $offset);
-    } else {
-        // หาก $shopId ไม่ถูกระบุ
-        $stmt->bind_param('ii', $limit, $offset  );
+        $stmt->bind_param('i', $shopId);
     }
 
     $stmt->execute();
@@ -57,6 +44,7 @@ function getMenus($conn, $page = 1, $limit = 10, $shopId = null )
 
     return $menus;
 }
+
 
 
 function deleteMenus($conn, $id, $imageUrl)

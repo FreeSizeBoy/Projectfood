@@ -1,7 +1,6 @@
 <?php
 require_once 'database.php';
 require_once 'sevice/expenses.php';
-require_once 'sevice/upload.php';
 
 $id = $parameters[0];
 

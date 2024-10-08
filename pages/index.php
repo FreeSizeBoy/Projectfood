@@ -27,7 +27,7 @@ include_once "database.php";
 <body>
     <!-- header -->
     <?php
-    include "component\head.php";
+    include "./component/head.php";
     ?>
 
     <div class="container-fluid containers">

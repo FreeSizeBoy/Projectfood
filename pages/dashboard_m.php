@@ -60,7 +60,7 @@
 
                             // หาก LocalStorage ยังไม่มีข้อมูล ให้แสดงแจ้งเตือนสำหรับรายการใหม่
                             if (previousOrders.length === 0) {
-                                const newOrders = orders.filter(order => order.status === 'pending' || order.status === 'confirm');
+                                const newOrders = orders;
 
                                 if (newOrders.length > 0) {
                                     showNewOrderAlert(newOrders);
@@ -80,11 +80,6 @@
                 });
             }
 
-            function getNewOrders(previousOrders, currentOrders) {
-                const previousIds = new Set(previousOrders.map(order => order.id));
-                return currentOrders.filter(order => !previousIds.has(order.id));
-            }
-            // ฟังก์ชัน getNewOrders นี่คือการ เปรียบเทียบคำสั่งซื้อเก่า (previousOrders) กับคำสั่งซื้อใหม่ (currentOrders) โดยจะหาคำสั่งซื้อที่ ไม่มีในรายการเก่า เพื่อดูว่าคำสั่งซื้อใดที่เป็นคำสั่งซื้อใหม่.
 
             function showNewOrderAlert(newOrders) {
                 Swal.fire({

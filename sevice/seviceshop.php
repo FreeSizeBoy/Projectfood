@@ -11,10 +11,8 @@ function getShopById($conn, $id)
     return $result->fetch_assoc();
 }
 
-function getShops($conn, $page = 1, $limit = 10, $filter = '')
+function getShops($conn, $filter = '')
 {
-    $offset = ($page - 1) * $limit;
-
     // สร้างคิวรี SQL สำหรับดึงข้อมูลร้านค้าและเมนู
     $sql = "
         SELECT 
@@ -29,19 +27,16 @@ function getShops($conn, $page = 1, $limit = 10, $filter = '')
         FROM shops
         JOIN users ON shops.owner_id = users.id
         LEFT JOIN menus ON shops.id = menus.shop_id
+        WHERE (1 = 1) 
         ";
 
-    if(!empty($filter)){
-        $sql = $sql . "AND shops.owner_id = '$filter'";
+    // กรณีมีการกรองข้อมูลด้วย $filter
+    if (!empty($filter)) {
+        $sql .= " AND shops.owner_id = '$filter'";
     }
 
-    $sql = $sql . 'LIMIT ? OFFSET ?';
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('ii', $limit, $offset);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
+    // ดำเนินการคิวรีโดยไม่จำกัดจำนวนและไม่มีการแบ่งหน้า
+    $result = $conn->query($sql);
     $shops = [];
 
     // ประมวลผลผลลัพธ์
@@ -78,6 +73,7 @@ function getShops($conn, $page = 1, $limit = 10, $filter = '')
     // แปลงข้อมูลร้านค้าเป็นรูปแบบ array เดียว
     return array_values($shops);
 }
+
 
 function toggleShopStatus($conn, $id) {
     // ดึงข้อมูลร้านค้าที่ระบุ
